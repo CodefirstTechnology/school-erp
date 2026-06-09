@@ -1,0 +1,43 @@
+<aside class="parent-sidebar" [class.open]="mobileOpen">
+  <div class="sidebar-overlay" (click)="mobileClose.emit()"></div>
+
+  <div class="sidebar-inner">
+    <div class="sidebar-logo">
+      <app-brand-logo variant="sidebar" tag="Parent" [iconSize]="40"></app-brand-logo>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button *ngFor="let item of navItems"
+              type="button"
+              class="nav-item"
+              [class.active]="isActive(item)"
+              (click)="navigate(item)">
+        <span class="nav-icon">
+          <ng-container [ngSwitch]="item.icon">
+            <svg *ngSwitchCase="'dashboard'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <svg *ngSwitchCase="'progress'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <svg *ngSwitchCase="'attendance'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <svg *ngSwitchCase="'grades'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg *ngSwitchCase="'fees'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            <svg *ngSwitchCase="'messages'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <svg *ngSwitchCase="'events'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <svg *ngSwitchCase="'profile'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </ng-container>
+        </span>
+        <span class="nav-label">{{ item.label }}</span>
+        <span *ngIf="item.badge" class="nav-badge">{{ item.badge }}</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-profile">
+      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Priya" alt="" class="profile-avatar" />
+      <div class="profile-info">
+        <span class="profile-name">{{ parentName }}</span>
+        <span class="profile-class">{{ childInfo }}</span>
+      </div>
+      <button type="button" class="logout-btn" (click)="logout()" title="Logout">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+</aside>

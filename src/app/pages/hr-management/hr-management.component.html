@@ -1,0 +1,431 @@
+<div class="hr-page">
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb">
+        <span>SchoolMate</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <span class="current">HR Management</span>
+      </div>
+      <h1 class="page-title">HR <span class="gradient-text">Management</span></h1>
+      <p class="page-subtitle">Enterprise human resources — employees, payroll, leave & recruitment</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export Report
+      </button>
+      <button class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Employee
+      </button>
+    </div>
+  </section>
+
+  <!-- KPI Cards -->
+  <section class="kpi-grid">
+    <div *ngFor="let kpi of kpiCards" class="kpi-card glass-card">
+      <div class="kpi-icon-wrap" [class]="'icon-' + kpi.color">
+        <ng-container [ngSwitch]="kpi.icon">
+          <svg *ngSwitchCase="'total'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <svg *ngSwitchCase="'present'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <svg *ngSwitchCase="'leave'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <svg *ngSwitchCase="'payroll'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </ng-container>
+      </div>
+      <div class="kpi-value">{{ kpi.value }}</div>
+      <div class="kpi-label">{{ kpi.title }}</div>
+      <div class="kpi-sub">{{ kpi.subtitle }}</div>
+    </div>
+  </section>
+
+  <!-- Charts -->
+  <section class="charts-row">
+    <!-- Employee Attendance -->
+    <div class="chart-card glass-card">
+      <div class="card-header">
+        <div>
+          <h2 class="section-title">Employee Attendance</h2>
+          <p class="section-subtitle">Weekly present vs absent</p>
+        </div>
+        <span class="badge badge-success">91.4%</span>
+      </div>
+      <div class="attendance-chart">
+        <div *ngFor="let d of attendanceChart" class="att-day">
+          <div class="att-stacked">
+            <div class="att-present" [style.height.%]="(d.present / maxAttendance) * 100"></div>
+            <div class="att-absent" [style.height.%]="(d.absent / maxAttendance) * 100"></div>
+          </div>
+          <span class="att-label">{{ d.day }}</span>
+        </div>
+      </div>
+      <div class="chart-legend">
+        <span><span class="legend-dot present"></span> Present</span>
+        <span><span class="legend-dot absent"></span> Absent</span>
+      </div>
+    </div>
+
+    <!-- Department Distribution -->
+    <div class="chart-card glass-card">
+      <div class="card-header">
+        <div>
+          <h2 class="section-title">Department Distribution</h2>
+          <p class="section-subtitle">Headcount by department</p>
+        </div>
+      </div>
+      <div class="dept-list">
+        <div *ngFor="let dept of departmentStats" class="dept-item">
+          <div class="dept-meta">
+            <span class="dept-dot" [style.background]="dept.color"></span>
+            <span class="dept-name">{{ dept.name }}</span>
+            <span class="dept-count">{{ dept.count }}</span>
+          </div>
+          <div class="dept-bar-track">
+            <div class="dept-bar" [style.width.%]="dept.percentage" [style.background]="dept.color"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payroll Analytics -->
+    <div class="chart-card glass-card">
+      <div class="card-header">
+        <div>
+          <h2 class="section-title">Payroll Analytics</h2>
+          <p class="section-subtitle">Monthly payroll (in Lakhs)</p>
+        </div>
+        <span class="badge badge-purple">₹122L Jun</span>
+      </div>
+      <div class="payroll-chart">
+        <div *ngFor="let p of payrollTrends" class="payroll-col">
+          <div class="payroll-bar-wrap">
+            <div class="payroll-bar" [style.height.%]="(p.amount / maxPayroll) * 100">
+              <span class="payroll-val">{{ p.amount }}L</span>
+            </div>
+          </div>
+          <span class="payroll-month">{{ p.month }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module Navigation -->
+  <section class="module-nav glass-card">
+    <button *ngFor="let mod of modules"
+            class="module-btn"
+            [class.active]="activeModule === mod.id"
+            (click)="setModule(mod.id)">
+      <ng-container [ngSwitch]="mod.icon">
+        <svg *ngSwitchCase="'employees'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        <svg *ngSwitchCase="'leave'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <svg *ngSwitchCase="'attendance'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <svg *ngSwitchCase="'payroll'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        <svg *ngSwitchCase="'recruitment'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+      </ng-container>
+      <span>{{ mod.label }}</span>
+      <span *ngIf="mod.count" class="module-count">{{ mod.count }}</span>
+    </button>
+  </section>
+
+  <!-- Filters -->
+  <section class="filters-bar glass-card">
+    <div class="filters-row">
+      <div class="filter-group">
+        <label>Department</label>
+        <select [(ngModel)]="selectedDepartment">
+          <option *ngFor="let d of departments" [value]="d">{{ d }}</option>
+        </select>
+      </div>
+      <div class="filter-group search-group">
+        <label>Search</label>
+        <div class="search-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" [(ngModel)]="searchQuery" placeholder="Search employees, records..." />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Employee Directory -->
+  <section *ngIf="activeModule === 'employees'" class="table-section glass-card">
+    <div class="table-header">
+      <div>
+        <h2 class="section-title">Employee Directory</h2>
+        <p class="section-subtitle">{{ filteredEmployees.length }} employees</p>
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table class="hr-table">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Employee ID</th>
+            <th>Department</th>
+            <th>Designation</th>
+            <th>Contact</th>
+            <th>Join Date</th>
+            <th>Attendance</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let emp of filteredEmployees">
+            <td>
+              <div class="emp-cell">
+                <img [src]="getAvatarUrl(emp.name)" [alt]="emp.name" />
+                <span class="emp-name">{{ emp.name }}</span>
+              </div>
+            </td>
+            <td><span class="id-badge">{{ emp.employeeId }}</span></td>
+            <td>{{ emp.department }}</td>
+            <td class="designation">{{ emp.designation }}</td>
+            <td>
+              <div class="contact-mini">
+                <span>{{ emp.phone }}</span>
+                <span class="email">{{ emp.email }}</span>
+              </div>
+            </td>
+            <td>{{ emp.joinDate }}</td>
+            <td>
+              <div class="att-mini">
+                <div class="att-bar-mini"><div [style.width.%]="emp.attendance"></div></div>
+                <span>{{ emp.attendance }}%</span>
+              </div>
+            </td>
+            <td><span class="status-badge" [ngClass]="getStatusClass(emp.status)">{{ emp.status === 'on-leave' ? 'On Leave' : (emp.status | titlecase) }}</span></td>
+            <td>
+              <div class="action-btns">
+                <button class="action-btn" title="View"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                <button class="action-btn" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Leave Requests -->
+  <section *ngIf="activeModule === 'leave'" class="table-section glass-card">
+    <div class="table-header">
+      <div>
+        <h2 class="section-title">Leave Requests</h2>
+        <p class="section-subtitle">{{ filteredLeaveRequests.length }} requests</p>
+      </div>
+      <button class="btn btn-primary btn-sm">New Leave Request</button>
+    </div>
+    <div class="table-wrapper">
+      <table class="hr-table">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Department</th>
+            <th>Leave Type</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Days</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let req of filteredLeaveRequests">
+            <td>
+              <div class="emp-cell compact">
+                <img [src]="getAvatarUrl(req.employeeName)" [alt]="req.employeeName" />
+                <div>
+                  <span class="emp-name">{{ req.employeeName }}</span>
+                  <span class="emp-id-sub">{{ req.employeeId }}</span>
+                </div>
+              </div>
+            </td>
+            <td>{{ req.department }}</td>
+            <td><span class="leave-type">{{ req.leaveType }}</span></td>
+            <td>{{ req.fromDate }}</td>
+            <td>{{ req.toDate }}</td>
+            <td><strong>{{ req.days }}</strong></td>
+            <td class="reason-cell">{{ req.reason }}</td>
+            <td><span class="status-badge" [ngClass]="getStatusClass(req.status)">{{ req.status | titlecase }}</span></td>
+            <td>
+              <div class="action-btns" *ngIf="req.status === 'pending'">
+                <button class="action-btn approve" title="Approve" (click)="approveLeave(req)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                </button>
+                <button class="action-btn reject" title="Reject" (click)="rejectLeave(req)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Attendance Tracking -->
+  <section *ngIf="activeModule === 'attendance'" class="table-section glass-card">
+    <div class="table-header">
+      <div>
+        <h2 class="section-title">Attendance Tracking</h2>
+        <p class="section-subtitle">Today's employee attendance — Jun 8, 2026</p>
+      </div>
+      <button class="btn btn-secondary btn-sm">Mark Attendance</button>
+    </div>
+    <div class="attendance-summary">
+      <div class="att-stat-card">
+        <span class="att-stat-val success">352</span>
+        <span class="att-stat-label">Present</span>
+      </div>
+      <div class="att-stat-card">
+        <span class="att-stat-val warning">18</span>
+        <span class="att-stat-label">On Leave</span>
+      </div>
+      <div class="att-stat-card">
+        <span class="att-stat-val danger">15</span>
+        <span class="att-stat-label">Absent</span>
+      </div>
+      <div class="att-stat-card">
+        <span class="att-stat-val info">91.4%</span>
+        <span class="att-stat-label">Attendance Rate</span>
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table class="hr-table">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Department</th>
+            <th>Check In</th>
+            <th>Check Out</th>
+            <th>Hours</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let emp of filteredEmployees">
+            <td>
+              <div class="emp-cell">
+                <img [src]="getAvatarUrl(emp.name)" [alt]="emp.name" />
+                <span class="emp-name">{{ emp.name }}</span>
+              </div>
+            </td>
+            <td>{{ emp.department }}</td>
+            <td>{{ emp.status === 'on-leave' ? '—' : '08:45 AM' }}</td>
+            <td>{{ emp.status === 'on-leave' ? '—' : (emp.status === 'inactive' ? '—' : '04:30 PM') }}</td>
+            <td>{{ emp.status === 'active' ? '7h 45m' : '—' }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="emp.status === 'active' ? 'status-approved' : (emp.status === 'on-leave' ? 'status-pending' : 'status-rejected')">
+                {{ emp.status === 'active' ? 'Present' : (emp.status === 'on-leave' ? 'On Leave' : 'Absent') }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Payroll Records -->
+  <section *ngIf="activeModule === 'payroll'" class="table-section glass-card">
+    <div class="table-header">
+      <div>
+        <h2 class="section-title">Payroll Records</h2>
+        <p class="section-subtitle">June 2026 salary cycle</p>
+      </div>
+      <button class="btn btn-primary btn-sm">Process Payroll</button>
+    </div>
+    <div class="payroll-summary">
+      <div class="payroll-stat">
+        <span class="pay-label">Total Disbursement</span>
+        <span class="pay-val">₹1,22,00,000</span>
+      </div>
+      <div class="payroll-stat">
+        <span class="pay-label">Processed</span>
+        <span class="pay-val success">368</span>
+      </div>
+      <div class="payroll-stat">
+        <span class="pay-label">Pending</span>
+        <span class="pay-val warning">12</span>
+      </div>
+      <div class="payroll-stat">
+        <span class="pay-label">On Hold</span>
+        <span class="pay-val danger">5</span>
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table class="hr-table">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Department</th>
+            <th>Month</th>
+            <th>Basic</th>
+            <th>Allowances</th>
+            <th>Deductions</th>
+            <th>Net Pay</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rec of filteredPayroll">
+            <td>
+              <div class="emp-cell compact">
+                <img [src]="getAvatarUrl(rec.employeeName)" [alt]="rec.employeeName" />
+                <div>
+                  <span class="emp-name">{{ rec.employeeName }}</span>
+                  <span class="emp-id-sub">{{ rec.employeeId }}</span>
+                </div>
+              </div>
+            </td>
+            <td>{{ rec.department }}</td>
+            <td>{{ rec.month }}</td>
+            <td>{{ formatCurrency(rec.basic) }}</td>
+            <td class="text-success">{{ formatCurrency(rec.allowances) }}</td>
+            <td class="text-danger">{{ formatCurrency(rec.deductions) }}</td>
+            <td><strong class="net-pay">{{ formatCurrency(rec.netPay) }}</strong></td>
+            <td><span class="status-badge" [ngClass]="getStatusClass(rec.status)">{{ rec.status === 'on-hold' ? 'On Hold' : (rec.status | titlecase) }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Recruitment Management -->
+  <section *ngIf="activeModule === 'recruitment'" class="table-section glass-card">
+    <div class="table-header">
+      <div>
+        <h2 class="section-title">Recruitment Management</h2>
+        <p class="section-subtitle">{{ recruitments.length }} active job postings</p>
+      </div>
+      <button class="btn btn-primary btn-sm">Post New Job</button>
+    </div>
+    <div class="recruitment-grid">
+      <div *ngFor="let job of recruitments" class="job-card">
+        <div class="job-header">
+          <h3>{{ job.position }}</h3>
+          <span class="status-badge" [ngClass]="getStatusClass(job.status)">{{ job.status | titlecase }}</span>
+        </div>
+        <span class="job-dept">{{ job.department }}</span>
+        <div class="job-stats">
+          <div class="job-stat">
+            <span class="job-stat-val">{{ job.openings }}</span>
+            <span class="job-stat-label">Openings</span>
+          </div>
+          <div class="job-stat">
+            <span class="job-stat-val">{{ job.applicants }}</span>
+            <span class="job-stat-label">Applicants</span>
+          </div>
+          <div class="job-stat">
+            <span class="job-stat-val">{{ job.shortlisted }}</span>
+            <span class="job-stat-label">Shortlisted</span>
+          </div>
+        </div>
+        <div class="job-footer">
+          <span class="job-date">Posted {{ job.postedDate }}</span>
+          <button class="btn btn-ghost btn-sm">View Pipeline →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

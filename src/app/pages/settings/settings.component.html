@@ -1,0 +1,633 @@
+<div class="settings-page">
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb">
+        <span>SchoolMate</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <span class="current">Settings</span>
+      </div>
+      <h1 class="page-title">System <span class="gradient-text">Settings</span></h1>
+      <p class="page-subtitle">Configure your school platform — manage users, integrations, and preferences</p>
+    </div>
+    <div class="header-actions" *ngIf="saveMessage">
+      <span class="save-toast">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        {{ saveMessage }}
+      </span>
+    </div>
+  </section>
+
+  <!-- Settings Layout -->
+  <div class="settings-layout">
+    <!-- Left Navigation -->
+    <nav class="settings-nav glass-card">
+      <div *ngFor="let group of sectionGroups" class="nav-group">
+        <div class="nav-group-label">{{ group }}</div>
+        <button *ngFor="let section of getSectionsByGroup(group)"
+                class="nav-item"
+                [class.active]="activeSection === section.id"
+                (click)="setSection(section.id)">
+          <span class="nav-icon">
+            <ng-container [ngSwitch]="section.icon">
+              <svg *ngSwitchCase="'school'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              <svg *ngSwitchCase="'academic'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>
+              <svg *ngSwitchCase="'users'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <svg *ngSwitchCase="'roles'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <svg *ngSwitchCase="'notifications'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <svg *ngSwitchCase="'email'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <svg *ngSwitchCase="'sms'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <svg *ngSwitchCase="'theme'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              <svg *ngSwitchCase="'security'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <svg *ngSwitchCase="'backup'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            </ng-container>
+          </span>
+          <span class="nav-label">{{ section.label }}</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Content Panel -->
+    <div class="settings-content">
+      <div class="content-header glass-card">
+        <div>
+          <h2 class="section-title">{{ activeSectionMeta?.label }}</h2>
+          <p class="section-subtitle">{{ activeSectionMeta?.description }}</p>
+        </div>
+      </div>
+
+      <!-- School Information -->
+      <div *ngIf="activeSection === 'school'" class="config-panel glass-card">
+        <div class="panel-section">
+          <h3 class="panel-heading">Basic Details</h3>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>School Name</label>
+              <input type="text" [(ngModel)]="schoolInfo.name" />
+            </div>
+            <div class="form-field">
+              <label>School Code</label>
+              <input type="text" [(ngModel)]="schoolInfo.code" />
+            </div>
+            <div class="form-field">
+              <label>Principal Name</label>
+              <input type="text" [(ngModel)]="schoolInfo.principal" />
+            </div>
+            <div class="form-field">
+              <label>Established Year</label>
+              <input type="text" [(ngModel)]="schoolInfo.established" />
+            </div>
+            <div class="form-field">
+              <label>Board Affiliation</label>
+              <select [(ngModel)]="schoolInfo.affiliation">
+                <option value="CBSE">CBSE</option>
+                <option value="ICSE">ICSE</option>
+                <option value="State Board">State Board</option>
+                <option value="IB">IB</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="panel-divider"></div>
+        <div class="panel-section">
+          <h3 class="panel-heading">Contact Information</h3>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Email Address</label>
+              <input type="email" [(ngModel)]="schoolInfo.email" />
+            </div>
+            <div class="form-field">
+              <label>Phone Number</label>
+              <input type="tel" [(ngModel)]="schoolInfo.phone" />
+            </div>
+            <div class="form-field full-width">
+              <label>Website</label>
+              <input type="url" [(ngModel)]="schoolInfo.website" />
+            </div>
+            <div class="form-field full-width">
+              <label>Street Address</label>
+              <input type="text" [(ngModel)]="schoolInfo.address" />
+            </div>
+            <div class="form-field">
+              <label>City</label>
+              <input type="text" [(ngModel)]="schoolInfo.city" />
+            </div>
+            <div class="form-field">
+              <label>State</label>
+              <input type="text" [(ngModel)]="schoolInfo.state" />
+            </div>
+            <div class="form-field">
+              <label>Pincode</label>
+              <input type="text" [(ngModel)]="schoolInfo.pincode" />
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer">
+          <button class="btn btn-primary" (click)="saveSettings()">Save Changes</button>
+        </div>
+      </div>
+
+      <!-- Academic Settings -->
+      <div *ngIf="activeSection === 'academic'" class="config-panel glass-card">
+        <div class="panel-section">
+          <h3 class="panel-heading">Academic Session</h3>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Current Session</label>
+              <input type="text" [(ngModel)]="academicSettings.session" />
+            </div>
+            <div class="form-field">
+              <label>Session Start Date</label>
+              <input type="date" [(ngModel)]="academicSettings.startDate" />
+            </div>
+            <div class="form-field">
+              <label>Session End Date</label>
+              <input type="date" [(ngModel)]="academicSettings.endDate" />
+            </div>
+            <div class="form-field">
+              <label>Working Days</label>
+              <select [(ngModel)]="academicSettings.workingDays">
+                <option value="Mon–Fri">Mon–Fri</option>
+                <option value="Mon–Sat">Mon–Sat</option>
+                <option value="Mon–Sun">Mon–Sun</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="panel-divider"></div>
+        <div class="panel-section">
+          <h3 class="panel-heading">Grading & Curriculum</h3>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Grading System</label>
+              <select [(ngModel)]="academicSettings.gradingSystem">
+                <option value="Percentage">Percentage</option>
+                <option value="GPA">GPA (4.0 Scale)</option>
+                <option value="CGPA">CGPA (10 Point)</option>
+                <option value="Letter Grade">Letter Grade</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Pass Percentage</label>
+              <input type="number" [(ngModel)]="academicSettings.passPercentage" min="0" max="100" />
+            </div>
+            <div class="form-field">
+              <label>Maximum Marks</label>
+              <input type="number" [(ngModel)]="academicSettings.maxMarks" />
+            </div>
+            <div class="form-field">
+              <label>Periods Per Day</label>
+              <input type="number" [(ngModel)]="academicSettings.periodsPerDay" />
+            </div>
+            <div class="form-field">
+              <label>Default Language</label>
+              <select [(ngModel)]="academicSettings.language">
+                <option value="English">English</option>
+                <option value="Hindi">Hindi</option>
+                <option value="Bilingual">Bilingual</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer">
+          <button class="btn btn-primary" (click)="saveSettings()">Save Changes</button>
+        </div>
+      </div>
+
+      <!-- User Management -->
+      <div *ngIf="activeSection === 'users'" class="config-panel glass-card">
+        <div class="panel-toolbar">
+          <div class="search-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" [(ngModel)]="searchUsers" placeholder="Search users..." />
+          </div>
+          <button class="btn btn-primary btn-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Invite User
+          </button>
+        </div>
+        <div class="users-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Last Login</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of filteredUsers">
+                <td>
+                  <div class="user-cell">
+                    <img [src]="user.avatar" [alt]="user.name" class="user-avatar" />
+                    <div>
+                      <div class="user-name">{{ user.name }}</div>
+                      <div class="user-email">{{ user.email }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="role-tag">{{ user.role }}</span></td>
+                <td><span class="badge" [ngClass]="getStatusClass(user.status)">{{ user.status }}</span></td>
+                <td class="text-muted">{{ user.lastLogin }}</td>
+                <td>
+                  <div class="row-actions">
+                    <button class="icon-btn" title="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button class="icon-btn danger" title="Remove"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Roles & Permissions -->
+      <div *ngIf="activeSection === 'roles'" class="roles-layout">
+        <div class="config-panel glass-card roles-cards">
+          <h3 class="panel-heading">Roles Overview</h3>
+          <div class="roles-grid">
+            <div *ngFor="let role of roles" class="role-card">
+              <div class="role-dot" [style.background]="role.color"></div>
+              <div class="role-info">
+                <span class="role-name">{{ role.name }}</span>
+                <span class="role-users">{{ role.users }} users</span>
+              </div>
+              <button class="icon-btn" title="Edit role"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm add-role-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Create Role
+          </button>
+        </div>
+
+        <div class="config-panel glass-card matrix-panel">
+          <div class="panel-toolbar">
+            <h3 class="panel-heading">User Access Matrix</h3>
+            <span class="matrix-hint">Click cells to toggle permissions</span>
+          </div>
+          <div class="matrix-scroll">
+            <table class="access-matrix">
+              <thead>
+                <tr>
+                  <th class="perm-col">Permission</th>
+                  <th *ngFor="let role of roles" class="role-col">
+                    <span class="matrix-role-dot" [style.background]="role.color"></span>
+                    {{ role.name }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let perm of permissions">
+                  <td class="perm-cell">
+                    <span class="perm-label">{{ perm.label }}</span>
+                    <span class="perm-cat">{{ perm.category }}</span>
+                  </td>
+                  <td *ngFor="let role of roles"
+                      class="matrix-cell"
+                      [class.locked]="role.id === 'super-admin'"
+                      [class.granted]="hasPermission(role.id, perm.id)"
+                      (click)="togglePermission(role.id, perm.id)">
+                    <svg *ngIf="hasPermission(role.id, perm.id)" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <svg *ngIf="!hasPermission(role.id, perm.id)" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="panel-footer">
+            <button class="btn btn-primary" (click)="saveSettings()">Save Permissions</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification Settings -->
+      <div *ngIf="activeSection === 'notifications'" class="config-panel glass-card">
+        <div class="toggle-list">
+          <div *ngFor="let toggle of notificationToggles" class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-label">{{ toggle.label }}</span>
+              <span class="toggle-desc">{{ toggle.description }}</span>
+            </div>
+            <button class="toggle-switch"
+                    [class.on]="toggle.enabled"
+                    (click)="toggleSetting(notificationToggles, toggle.id)"
+                    [attr.aria-pressed]="toggle.enabled">
+              <span class="toggle-thumb"></span>
+            </button>
+          </div>
+        </div>
+        <div class="panel-footer">
+          <button class="btn btn-primary" (click)="saveSettings()">Save Preferences</button>
+        </div>
+      </div>
+
+      <!-- Email Configuration -->
+      <div *ngIf="activeSection === 'email'" class="config-panel glass-card">
+        <div class="panel-section">
+          <h3 class="panel-heading">SMTP Server</h3>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Provider</label>
+              <select [(ngModel)]="emailConfig.provider">
+                <option value="SMTP">Custom SMTP</option>
+                <option value="SendGrid">SendGrid</option>
+                <option value="Mailgun">Mailgun</option>
+                <option value="Amazon SES">Amazon SES</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>SMTP Host</label>
+              <input type="text" [(ngModel)]="emailConfig.host" />
+            </div>
+            <div class="form-field">
+              <label>Port</label>
+              <input type="number" [(ngModel)]="emailConfig.port" />
+            </div>
+            <div class="form-field">
+              <label>Encryption</label>
+              <select [(ngModel)]="emailConfig.encryption">
+                <option value="TLS">TLS</option>
+                <option value="SSL">SSL</option>
+                <option value="None">None</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Username</label>
+              <input type="text" [(ngModel)]="emailConfig.username" />
+            </div>
+            <div class="form-field">
+              <label>Password</label>
+              <input type="password" value="••••••••••••" />
+            </div>
+          </div>
+        </div>
+        <div class="panel-divider"></div>
+        <div class="panel-section">
+          <h3 class="panel-heading">Sender Details</h3>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>From Name</label>
+              <input type="text" [(ngModel)]="emailConfig.fromName" />
+            </div>
+            <div class="form-field">
+              <label>From Email</label>
+              <input type="email" [(ngModel)]="emailConfig.fromEmail" />
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer">
+          <button class="btn btn-secondary" (click)="testEmailConnection()">Send Test Email</button>
+          <button class="btn btn-primary" (click)="saveSettings()">Save Configuration</button>
+        </div>
+      </div>
+
+      <!-- SMS Configuration -->
+      <div *ngIf="activeSection === 'sms'" class="config-panel glass-card">
+        <div class="panel-section">
+          <h3 class="panel-heading">SMS Gateway</h3>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Provider</label>
+              <select [(ngModel)]="smsConfig.provider">
+                <option value="Twilio">Twilio</option>
+                <option value="MSG91">MSG91</option>
+                <option value="TextLocal">TextLocal</option>
+                <option value="AWS SNS">AWS SNS</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>API Key</label>
+              <input type="password" [(ngModel)]="smsConfig.apiKey" />
+            </div>
+            <div class="form-field">
+              <label>Sender ID</label>
+              <input type="text" [(ngModel)]="smsConfig.senderId" />
+            </div>
+            <div class="form-field">
+              <label>Country Code</label>
+              <input type="text" [(ngModel)]="smsConfig.countryCode" />
+            </div>
+            <div class="form-field">
+              <label>Daily Limit</label>
+              <input type="number" [(ngModel)]="smsConfig.dailyLimit" />
+            </div>
+            <div class="form-field">
+              <label>DLT Template ID</label>
+              <input type="text" [(ngModel)]="smsConfig.templateId" />
+            </div>
+          </div>
+        </div>
+        <div class="info-banner">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>SMS messages require DLT registration for India. Ensure your templates are approved before sending bulk messages.</span>
+        </div>
+        <div class="panel-footer">
+          <button class="btn btn-secondary" (click)="testSmsConnection()">Send Test SMS</button>
+          <button class="btn btn-primary" (click)="saveSettings()">Save Configuration</button>
+        </div>
+      </div>
+
+      <!-- Theme Customization -->
+      <div *ngIf="activeSection === 'theme'" class="config-panel glass-card">
+        <div class="panel-section">
+          <h3 class="panel-heading">Brand Colors</h3>
+          <div class="color-picker-row">
+            <div *ngFor="let color of colorPresets"
+                 class="color-swatch"
+                 [style.background]="color"
+                 [class.selected]="themeSettings.primaryColor === color"
+                 (click)="setThemeColor(color)">
+              <svg *ngIf="themeSettings.primaryColor === color" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="custom-color">
+              <label>Custom</label>
+              <input type="color" [(ngModel)]="themeSettings.primaryColor" />
+            </div>
+          </div>
+          <div class="theme-preview" [style.--preview-color]="themeSettings.primaryColor">
+            <div class="preview-sidebar"></div>
+            <div class="preview-main">
+              <div class="preview-card"></div>
+              <div class="preview-card short"></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-divider"></div>
+        <div class="panel-section">
+          <h3 class="panel-heading">Display Options</h3>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Accent Mode</label>
+              <select [(ngModel)]="themeSettings.accentMode">
+                <option value="gradient">Gradient</option>
+                <option value="solid">Solid</option>
+                <option value="minimal">Minimal</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Sidebar Style</label>
+              <select [(ngModel)]="themeSettings.sidebarStyle">
+                <option value="gradient">Purple Gradient</option>
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+              </select>
+            </div>
+          </div>
+          <div class="toggle-list compact">
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Compact Mode</span>
+                <span class="toggle-desc">Reduce spacing for dense layouts</span>
+              </div>
+              <button class="toggle-switch" [class.on]="themeSettings.compactMode" (click)="themeSettings.compactMode = !themeSettings.compactMode">
+                <span class="toggle-thumb"></span>
+              </button>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Rounded Corners</span>
+                <span class="toggle-desc">Use soft rounded card corners</span>
+              </div>
+              <button class="toggle-switch" [class.on]="themeSettings.roundedCorners" (click)="themeSettings.roundedCorners = !themeSettings.roundedCorners">
+                <span class="toggle-thumb"></span>
+              </button>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Animations</span>
+                <span class="toggle-desc">Enable UI transitions and micro-interactions</span>
+              </div>
+              <button class="toggle-switch" [class.on]="themeSettings.animations" (click)="themeSettings.animations = !themeSettings.animations">
+                <span class="toggle-thumb"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer">
+          <button class="btn btn-primary" (click)="saveSettings()">Apply Theme</button>
+        </div>
+      </div>
+
+      <!-- Security Settings -->
+      <div *ngIf="activeSection === 'security'" class="config-panel glass-card">
+        <div class="security-banner">
+          <div class="security-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <strong>Security Score: 92/100</strong>
+            <p>Your school platform meets most security best practices. Enable SSO for enhanced protection.</p>
+          </div>
+        </div>
+        <div class="toggle-list">
+          <div *ngFor="let toggle of securityToggles" class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-label">{{ toggle.label }}</span>
+              <span class="toggle-desc">{{ toggle.description }}</span>
+            </div>
+            <button class="toggle-switch"
+                    [class.on]="toggle.enabled"
+                    (click)="toggleSetting(securityToggles, toggle.id)"
+                    [attr.aria-pressed]="toggle.enabled">
+              <span class="toggle-thumb"></span>
+            </button>
+          </div>
+        </div>
+        <div class="panel-divider"></div>
+        <div class="panel-section">
+          <h3 class="panel-heading">Session Management</h3>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Session Timeout (minutes)</label>
+              <input type="number" value="30" />
+            </div>
+            <div class="form-field">
+              <label>Max Login Attempts</label>
+              <input type="number" value="5" />
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer">
+          <button class="btn btn-primary" (click)="saveSettings()">Save Security Settings</button>
+        </div>
+      </div>
+
+      <!-- Backup & Restore -->
+      <div *ngIf="activeSection === 'backup'" class="backup-layout">
+        <div class="config-panel glass-card">
+          <div class="panel-section">
+            <h3 class="panel-heading">Backup Schedule</h3>
+            <div class="form-grid">
+              <div class="form-field">
+                <label>Frequency</label>
+                <select [(ngModel)]="backupSchedule.frequency">
+                  <option value="Daily">Daily</option>
+                  <option value="Weekly">Weekly</option>
+                  <option value="Monthly">Monthly</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Backup Time</label>
+                <input type="time" [(ngModel)]="backupSchedule.time" />
+              </div>
+              <div class="form-field">
+                <label>Retention (days)</label>
+                <input type="number" [(ngModel)]="backupSchedule.retention" />
+              </div>
+            </div>
+            <div class="toggle-list compact">
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <span class="toggle-label">Cloud Sync</span>
+                  <span class="toggle-desc">Automatically upload backups to cloud storage</span>
+                </div>
+                <button class="toggle-switch" [class.on]="backupSchedule.cloudSync" (click)="backupSchedule.cloudSync = !backupSchedule.cloudSync">
+                  <span class="toggle-thumb"></span>
+                </button>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <span class="toggle-label">Encrypt Backups</span>
+                  <span class="toggle-desc">AES-256 encryption for all backup files</span>
+                </div>
+                <button class="toggle-switch" [class.on]="backupSchedule.encryptBackups" (click)="backupSchedule.encryptBackups = !backupSchedule.encryptBackups">
+                  <span class="toggle-thumb"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="panel-footer">
+            <button class="btn btn-secondary" (click)="runBackup()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Run Backup Now
+            </button>
+            <button class="btn btn-primary" (click)="saveSettings()">Save Schedule</button>
+          </div>
+        </div>
+
+        <div class="config-panel glass-card">
+          <h3 class="panel-heading">Backup History</h3>
+          <div class="backup-list">
+            <div *ngFor="let backup of backups" class="backup-item">
+              <div class="backup-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+              </div>
+              <div class="backup-info">
+                <span class="backup-date">{{ backup.date }}</span>
+                <span class="backup-meta">{{ backup.type }} · {{ backup.size }}</span>
+              </div>
+              <span class="badge" [ngClass]="getStatusClass(backup.status)">{{ backup.status }}</span>
+              <div class="backup-actions">
+                <button class="btn btn-ghost btn-sm" *ngIf="backup.status === 'Completed'">Restore</button>
+                <button class="icon-btn" title="Download"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,455 @@
+<div class="finance-page">
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb">
+        <span>SchoolMate</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <span class="current">Accounts & Finance</span>
+      </div>
+      <h1 class="page-title">Finance <span class="gradient-text">& Accounts</span></h1>
+      <p class="page-subtitle">Financial analytics, fee collection, expenses & reporting</p>
+    </div>
+    <div class="header-actions">
+      <select class="period-select" [(ngModel)]="selectedPeriod">
+        <option *ngFor="let p of periods" [value]="p">{{ p }}</option>
+      </select>
+      <button class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+      </button>
+      <button class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Record Payment
+      </button>
+    </div>
+  </section>
+
+  <!-- KPI Cards -->
+  <section class="kpi-grid">
+    <div *ngFor="let kpi of kpiCards" class="kpi-card glass-card" [class]="'kpi-' + kpi.color">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap" [class]="'icon-' + kpi.color">
+          <ng-container [ngSwitch]="kpi.icon">
+            <svg *ngSwitchCase="'revenue'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            <svg *ngSwitchCase="'pending'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <svg *ngSwitchCase="'collected'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <svg *ngSwitchCase="'expenses'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+          </ng-container>
+        </div>
+        <span *ngIf="kpi.change" class="kpi-change" [class.up]="kpi.trendUp" [class.down]="!kpi.trendUp">{{ kpi.change }}</span>
+      </div>
+      <div class="kpi-value">{{ kpi.value }}</div>
+      <div class="kpi-label">{{ kpi.title }}</div>
+      <div class="kpi-sub">{{ kpi.subtitle }}</div>
+    </div>
+  </section>
+
+  <!-- Charts -->
+  <section class="charts-row">
+    <!-- Revenue Trend -->
+    <div class="chart-card glass-card chart-wide">
+      <div class="card-header">
+        <div>
+          <h2 class="section-title">Revenue Trend</h2>
+          <p class="section-subtitle">Monthly revenue vs collection (in Lakhs)</p>
+        </div>
+        <div class="chart-legend-inline">
+          <span><span class="dot revenue"></span> Revenue</span>
+          <span><span class="dot collection"></span> Collection</span>
+        </div>
+      </div>
+      <div class="line-chart-wrap">
+        <svg class="line-chart" viewBox="0 0 100 70" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="revenueArea" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="revenueLine" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#7C3AED"/>
+              <stop offset="100%" stop-color="#A78BFA"/>
+            </linearGradient>
+          </defs>
+          <line *ngFor="let i of [0,1,2,3,4]" [attr.x1]="0" [attr.y1]="i * 17.5" [attr.x2]="100" [attr.y2]="i * 17.5" stroke="var(--chart-grid)" stroke-width="0.3"/>
+          <path [attr.d]="getRevenueArea()" fill="url(#revenueArea)"/>
+          <path [attr.d]="getRevenuePath()" fill="none" stroke="url(#revenueLine)" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        <div class="chart-x-labels">
+          <span *ngFor="let r of revenueTrend">{{ r.month }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly Collection -->
+    <div class="chart-card glass-card">
+      <div class="card-header">
+        <div>
+          <h2 class="section-title">Monthly Collection</h2>
+          <p class="section-subtitle">Target vs collected</p>
+        </div>
+        <span class="badge badge-success">96.8%</span>
+      </div>
+      <div class="collection-chart">
+        <div *ngFor="let m of monthlyCollection" class="coll-group">
+          <div class="coll-bars">
+            <div class="coll-bar target" [style.height.%]="(m.target / maxCollection) * 100"></div>
+            <div class="coll-bar collected" [style.height.%]="(m.collected / maxCollection) * 100"></div>
+          </div>
+          <span class="coll-month">{{ m.month }}</span>
+        </div>
+      </div>
+      <div class="mini-legend">
+        <span><span class="dot target"></span> Target</span>
+        <span><span class="dot collected"></span> Collected</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="charts-row secondary">
+    <!-- Expense Analysis -->
+    <div class="chart-card glass-card">
+      <div class="card-header">
+        <div>
+          <h2 class="section-title">Expense Analysis</h2>
+          <p class="section-subtitle">YTD breakdown by category (₹ Lakhs)</p>
+        </div>
+      </div>
+      <div class="expense-list">
+        <div *ngFor="let cat of expenseCategories" class="expense-item">
+          <div class="expense-meta">
+            <span class="expense-dot" [style.background]="cat.color"></span>
+            <span class="expense-name">{{ cat.name }}</span>
+            <span class="expense-amt">₹{{ cat.amount }}L</span>
+          </div>
+          <div class="expense-bar-track">
+            <div class="expense-bar" [style.width.%]="cat.percentage" [style.background]="cat.color"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profit Overview -->
+    <div class="chart-card glass-card profit-card">
+      <div class="card-header">
+        <div>
+          <h2 class="section-title">Profit Overview</h2>
+          <p class="section-subtitle">YTD financial summary (₹ Lakhs)</p>
+        </div>
+        <span class="badge badge-purple">{{ profitOverview.margin }}% margin</span>
+      </div>
+      <div class="profit-visual">
+        <div class="profit-ring">
+          <svg viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="var(--bg-primary)" stroke-width="12"/>
+            <circle cx="60" cy="60" r="50" fill="none" stroke="url(#profitGrad)" stroke-width="12"
+                    stroke-dasharray="314" [attr.stroke-dashoffset]="314 - (314 * profitOverview.margin / 100)"
+                    stroke-linecap="round" transform="rotate(-90 60 60)"/>
+            <defs>
+              <linearGradient id="profitGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#7C3AED"/>
+                <stop offset="100%" stop-color="#22C55E"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="profit-center">
+            <span class="profit-val">₹{{ profitOverview.profit }}L</span>
+            <span class="profit-label">Net Profit</span>
+          </div>
+        </div>
+        <div class="profit-breakdown">
+          <div class="profit-row">
+            <span class="profit-row-label"><span class="dot revenue"></span> Revenue</span>
+            <span class="profit-row-val success">₹{{ profitOverview.revenue }}L</span>
+          </div>
+          <div class="profit-row">
+            <span class="profit-row-label"><span class="dot expense"></span> Expenses</span>
+            <span class="profit-row-val danger">₹{{ profitOverview.expenses }}L</span>
+          </div>
+          <div class="profit-row total">
+            <span class="profit-row-label">Net Profit</span>
+            <span class="profit-row-val">₹{{ profitOverview.profit }}L</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module Nav -->
+  <section class="module-nav glass-card">
+    <button *ngFor="let mod of modules" class="module-btn" [class.active]="activeModule === mod.id" (click)="setModule(mod.id)">
+      <ng-container [ngSwitch]="mod.icon">
+        <svg *ngSwitchCase="'fees'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <svg *ngSwitchCase="'expenses'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        <svg *ngSwitchCase="'salary'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        <svg *ngSwitchCase="'invoices'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+        <svg *ngSwitchCase="'reports'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </ng-container>
+      <span>{{ mod.label }}</span>
+    </button>
+  </section>
+
+  <!-- Recent Transactions (always visible in overview / fees module) -->
+  <section *ngIf="activeModule === 'fees'" class="tables-grid">
+    <div class="table-section glass-card">
+      <div class="table-header">
+        <div>
+          <h2 class="section-title">Recent Transactions</h2>
+          <p class="section-subtitle">Latest financial activity</p>
+        </div>
+        <button class="btn btn-ghost btn-sm">View All →</button>
+      </div>
+      <div class="table-wrapper">
+        <table class="fin-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Reference</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let txn of recentTransactions">
+              <td class="date-cell">{{ txn.date }}</td>
+              <td class="desc-cell">{{ txn.description }}</td>
+              <td><span class="cat-badge">{{ txn.category }}</span></td>
+              <td><span class="ref-badge">{{ txn.reference }}</span></td>
+              <td [class]="txn.type === 'credit' ? 'amount-credit' : 'amount-debit'">
+                {{ txn.type === 'credit' ? '+' : '−' }}{{ formatFullCurrency(txn.amount) }}
+              </td>
+              <td><span class="status-badge" [ngClass]="getStatusClass(txn.status)">{{ txn.status | titlecase }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="table-section glass-card">
+      <div class="table-header">
+        <div>
+          <h2 class="section-title">Pending Payments</h2>
+          <p class="section-subtitle">{{ pendingPayments.length }} outstanding accounts</p>
+        </div>
+        <button class="btn btn-primary btn-sm">Send Reminders</button>
+      </div>
+      <div class="table-wrapper">
+        <table class="fin-table compact">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Fee Type</th>
+              <th>Amount</th>
+              <th>Due Date</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of pendingPayments">
+              <td>
+                <div class="student-mini">
+                  <span class="student-name">{{ p.studentName }}</span>
+                  <span class="student-class">{{ p.class }}</span>
+                </div>
+              </td>
+              <td>{{ p.feeType }}</td>
+              <td><strong>{{ formatFullCurrency(p.amount) }}</strong></td>
+              <td>
+                <span [class.overdue-text]="p.overdueDays > 0">{{ p.dueDate }}</span>
+                <span *ngIf="p.overdueDays > 0" class="overdue-days">{{ p.overdueDays }}d overdue</span>
+              </td>
+              <td><span class="status-badge" [ngClass]="getStatusClass(p.status)">{{ p.status | titlecase }}</span></td>
+              <td><button class="btn btn-ghost btn-sm" (click)="sendReminder(p)">Remind</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fee Records -->
+  <section *ngIf="activeModule === 'fees'" class="table-section glass-card full-width">
+    <div class="table-header">
+      <div>
+        <h2 class="section-title">Fee Records</h2>
+        <p class="section-subtitle">Student fee status for {{ selectedPeriod }}</p>
+      </div>
+      <div class="search-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" [(ngModel)]="searchQuery" placeholder="Search students..." />
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table class="fin-table">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Roll No.</th>
+            <th>Class</th>
+            <th>Term</th>
+            <th>Total Fee</th>
+            <th>Paid</th>
+            <th>Balance</th>
+            <th>Last Payment</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rec of feeRecords">
+            <td class="student-name">{{ rec.studentName }}</td>
+            <td><span class="ref-badge">{{ rec.rollNumber }}</span></td>
+            <td>{{ rec.class }}</td>
+            <td>{{ rec.term }}</td>
+            <td>{{ formatFullCurrency(rec.totalFee) }}</td>
+            <td class="amount-credit">{{ formatFullCurrency(rec.paid) }}</td>
+            <td [class.amount-debit]="rec.balance > 0">{{ formatFullCurrency(rec.balance) }}</td>
+            <td>{{ rec.lastPayment }}</td>
+            <td><span class="status-badge" [ngClass]="getStatusClass(rec.status)">{{ rec.status | titlecase }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Expense Tracking -->
+  <section *ngIf="activeModule === 'expenses'" class="table-section glass-card">
+    <div class="table-header">
+      <div>
+        <h2 class="section-title">Expense Tracking</h2>
+        <p class="section-subtitle">Operational expenses & approvals</p>
+      </div>
+      <button class="btn btn-primary btn-sm">Add Expense</button>
+    </div>
+    <div class="table-wrapper">
+      <table class="fin-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Vendor</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let exp of expenses">
+            <td>{{ exp.date }}</td>
+            <td><span class="cat-badge">{{ exp.category }}</span></td>
+            <td>{{ exp.description }}</td>
+            <td>{{ exp.vendor }}</td>
+            <td class="amount-debit">−{{ formatFullCurrency(exp.amount) }}</td>
+            <td><span class="status-badge" [ngClass]="getStatusClass(exp.status)">{{ exp.status | titlecase }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Salary Management -->
+  <section *ngIf="activeModule === 'salary'" class="table-section glass-card">
+    <div class="table-header">
+      <div>
+        <h2 class="section-title">Salary Management</h2>
+        <p class="section-subtitle">June 2026 payroll by department</p>
+      </div>
+      <button class="btn btn-primary btn-sm">Process Payroll</button>
+    </div>
+    <div class="salary-grid">
+      <div *ngFor="let dept of salaryRecords" class="salary-card">
+        <h3>{{ dept.department }}</h3>
+        <div class="salary-stats">
+          <div class="salary-stat">
+            <span class="sal-val">{{ dept.employees }}</span>
+            <span class="sal-label">Employees</span>
+          </div>
+          <div class="salary-stat">
+            <span class="sal-val">₹{{ dept.total }}L</span>
+            <span class="sal-label">Total</span>
+          </div>
+          <div class="salary-stat">
+            <span class="sal-val success">{{ dept.processed }}</span>
+            <span class="sal-label">Processed</span>
+          </div>
+          <div class="salary-stat">
+            <span class="sal-val" [class.warning]="dept.pending > 0">{{ dept.pending }}</span>
+            <span class="sal-label">Pending</span>
+          </div>
+        </div>
+        <div class="salary-progress">
+          <div class="salary-bar" [style.width.%]="(dept.processed / dept.employees) * 100"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Invoice Management -->
+  <section *ngIf="activeModule === 'invoices'" class="table-section glass-card">
+    <div class="table-header">
+      <div>
+        <h2 class="section-title">Invoice Management</h2>
+        <p class="section-subtitle">{{ invoices.length }} invoices</p>
+      </div>
+      <button class="btn btn-primary btn-sm">Create Invoice</button>
+    </div>
+    <div class="table-wrapper">
+      <table class="fin-table">
+        <thead>
+          <tr>
+            <th>Invoice No.</th>
+            <th>Client</th>
+            <th>Issue Date</th>
+            <th>Due Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let inv of invoices">
+            <td><span class="ref-badge">{{ inv.invoiceNo }}</span></td>
+            <td>{{ inv.client }}</td>
+            <td>{{ inv.issueDate }}</td>
+            <td [class.overdue-text]="inv.status === 'overdue'">{{ inv.dueDate }}</td>
+            <td><strong>{{ formatFullCurrency(inv.amount) }}</strong></td>
+            <td><span class="status-badge" [ngClass]="getStatusClass(inv.status)">{{ inv.status | titlecase }}</span></td>
+            <td>
+              <div class="action-btns">
+                <button class="action-btn" title="View"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                <button class="action-btn" title="Download"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Financial Reports -->
+  <section *ngIf="activeModule === 'reports'" class="reports-section">
+    <div class="reports-grid">
+      <div *ngFor="let report of [
+        { name: 'Income Statement', desc: 'Revenue, expenses & net profit', icon: 'chart', period: 'YTD 2025-26' },
+        { name: 'Balance Sheet', desc: 'Assets, liabilities & equity', icon: 'balance', period: 'As of Jun 2026' },
+        { name: 'Cash Flow Statement', desc: 'Operating, investing & financing', icon: 'cash', period: 'YTD 2025-26' },
+        { name: 'Fee Collection Report', desc: 'Class-wise collection analysis', icon: 'fees', period: 'Jun 2026' },
+        { name: 'Expense Report', desc: 'Category-wise expense breakdown', icon: 'expense', period: 'YTD 2025-26' },
+        { name: 'Payroll Summary', desc: 'Department-wise salary report', icon: 'payroll', period: 'June 2026' }
+      ]" class="report-card glass-card">
+        <div class="report-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <h3>{{ report.name }}</h3>
+        <p>{{ report.desc }}</p>
+        <span class="report-period">{{ report.period }}</span>
+        <div class="report-actions">
+          <button class="btn btn-ghost btn-sm">Preview</button>
+          <button class="btn btn-primary btn-sm">Generate</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

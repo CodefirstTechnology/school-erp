@@ -1,0 +1,51 @@
+<div class="ai-assistant-widget">
+  <div class="chat-panel glass-card" *ngIf="isOpen">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <div class="chat-avatar">
+          <img src="assets/brand/schoolmate/schoolmate-icon-mark.svg" alt="" width="24" height="24" />
+        </div>
+        <div>
+          <span class="chat-title">SchoolMate AI Assistant</span>
+          <span class="chat-status">Online — Ready to help</span>
+        </div>
+      </div>
+      <button class="chat-close" (click)="toggleChat()" aria-label="Close chat">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="chat-messages">
+      <div class="message ai-message">
+        <p>Hello Admin! I'm your SchoolMate AI assistant. I can help you with:</p>
+        <ul>
+          <li>Student analytics & reports</li>
+          <li>Attendance predictions</li>
+          <li>Fee collection insights</li>
+          <li>Staff management queries</li>
+        </ul>
+        <p>How can I assist you today?</p>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" placeholder="Ask me anything..." class="chat-input" />
+      <button class="chat-send" aria-label="Send message">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <button class="fab" (click)="toggleChat()" [class.pulsing]="isPulsing" aria-label="Open AI Assistant">
+    <span class="fab-glow"></span>
+    <span class="fab-ring"></span>
+    <svg *ngIf="!isOpen" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <svg *ngIf="isOpen" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+</div>

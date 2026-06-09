@@ -1,0 +1,228 @@
+<div class="admissions-page">
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb">
+        <span>SchoolMate</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <span class="current">Admissions</span>
+      </div>
+      <h1 class="page-title">Admissions <span class="gradient-text">Management</span></h1>
+      <p class="page-subtitle">Manage applications, review submissions, and track admission pipeline</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export Data
+      </button>
+      <button class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Application
+      </button>
+    </div>
+  </section>
+
+  <!-- KPI Cards -->
+  <section class="kpi-grid">
+    <div *ngFor="let kpi of kpiCards" class="kpi-card glass-card" [class]="'kpi-' + kpi.color">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap" [class]="'icon-' + kpi.color">
+          <ng-container [ngSwitch]="kpi.icon">
+            <svg *ngSwitchCase="'total'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <svg *ngSwitchCase="'pending'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <svg *ngSwitchCase="'approved'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <svg *ngSwitchCase="'rejected'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          </ng-container>
+        </div>
+        <span class="kpi-change" [class.up]="kpi.trendUp" [class.down]="!kpi.trendUp">{{ kpi.change }}</span>
+      </div>
+      <div class="kpi-value">{{ kpi.value }}</div>
+      <div class="kpi-label">{{ kpi.title }}</div>
+    </div>
+  </section>
+
+  <!-- Analytics Section -->
+  <section class="analytics-row">
+    <!-- Admission Funnel -->
+    <div class="analytics-card glass-card funnel-card">
+      <div class="card-header">
+        <div>
+          <h2 class="section-title">Admission Funnel Analytics</h2>
+          <p class="section-subtitle">Application pipeline conversion stages</p>
+        </div>
+        <span class="badge badge-purple">2025-26</span>
+      </div>
+      <div class="funnel-list">
+        <div *ngFor="let stage of funnelStages" class="funnel-item">
+          <div class="funnel-meta">
+            <span class="funnel-label">{{ stage.label }}</span>
+            <span class="funnel-count">{{ stage.count | number }}</span>
+          </div>
+          <div class="funnel-bar-track">
+            <div class="funnel-bar" [style.width.%]="stage.percentage" [style.background]="stage.color"></div>
+          </div>
+          <span class="funnel-pct">{{ stage.percentage }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly Trends -->
+    <div class="analytics-card glass-card trends-card">
+      <div class="card-header">
+        <div>
+          <h2 class="section-title">Monthly Admission Trends</h2>
+          <p class="section-subtitle">Applications vs approvals</p>
+        </div>
+      </div>
+      <div class="trends-chart">
+        <div *ngFor="let m of monthlyTrends" class="trend-group">
+          <div class="trend-bars">
+            <div class="trend-bar apps" [style.height.%]="(m.applications / maxMonthly) * 100" [attr.title]="m.applications + ' applications'"></div>
+            <div class="trend-bar approved" [style.height.%]="(m.approved / maxMonthly) * 100" [attr.title]="m.approved + ' approved'"></div>
+          </div>
+          <span class="trend-month">{{ m.month }}</span>
+        </div>
+      </div>
+      <div class="trends-legend">
+        <span class="legend-item"><span class="dot apps"></span> Applications</span>
+        <span class="legend-item"><span class="dot approved"></span> Approved</span>
+      </div>
+    </div>
+
+    <!-- Source Analytics -->
+    <div class="analytics-card glass-card source-card">
+      <div class="card-header">
+        <div>
+          <h2 class="section-title">Application Source Analytics</h2>
+          <p class="section-subtitle">Where applications originate</p>
+        </div>
+      </div>
+      <div class="source-list">
+        <div *ngFor="let src of sourceAnalytics" class="source-item">
+          <div class="source-info">
+            <span class="source-dot" [style.background]="src.color"></span>
+            <span class="source-name">{{ src.source }}</span>
+          </div>
+          <div class="source-stats">
+            <span class="source-count">{{ src.count }}</span>
+            <span class="source-pct">{{ src.percentage }}%</span>
+          </div>
+          <div class="source-bar-track">
+            <div class="source-bar" [style.width.%]="src.percentage" [style.background]="src.color"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filters -->
+  <section class="filters-bar glass-card">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label>Academic Year</label>
+        <select [(ngModel)]="selectedYear" (change)="applyFilters()">
+          <option *ngFor="let y of academicYears" [value]="y">{{ y }}</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Class</label>
+        <select [(ngModel)]="selectedClass" (change)="applyFilters()">
+          <option *ngFor="let c of classes" [value]="c">{{ c }}</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Status</label>
+        <select [(ngModel)]="selectedStatus" (change)="applyFilters()">
+          <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Date From</label>
+        <input type="date" [(ngModel)]="dateFrom" (change)="applyFilters()" />
+      </div>
+      <div class="filter-group">
+        <label>Date To</label>
+        <input type="date" [(ngModel)]="dateTo" (change)="applyFilters()" />
+      </div>
+      <div class="filter-actions">
+        <button class="btn btn-ghost btn-sm" (click)="selectedClass='All Classes'; selectedStatus='All Status'; applyFilters()">Clear Filters</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Admissions Table -->
+  <section class="table-section glass-card">
+    <div class="table-header">
+      <div>
+        <h2 class="section-title">Admission Applications</h2>
+        <p class="section-subtitle">{{ filteredAdmissions.length }} applications found</p>
+      </div>
+      <div class="table-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search by name, ID, parent..." />
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="admissions-table">
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Application ID</th>
+            <th>Class Applied</th>
+            <th>Parent Name</th>
+            <th>Contact Number</th>
+            <th>Application Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of filteredAdmissions">
+            <td>
+              <div class="student-cell">
+                <img [src]="'https://api.dicebear.com/7.x/initials/svg?seed=' + row.studentName + '&backgroundColor=c4b5fd'" [alt]="row.studentName" />
+                <div>
+                  <span class="student-name">{{ row.studentName }}</span>
+                  <span class="student-source">{{ row.source }}</span>
+                </div>
+              </div>
+            </td>
+            <td><span class="app-id">{{ row.applicationId }}</span></td>
+            <td><span class="class-badge">{{ row.classApplied }}</span></td>
+            <td>{{ row.parentName }}</td>
+            <td class="contact-cell">{{ row.contact }}</td>
+            <td class="date-cell">{{ row.applicationDate }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="getStatusClass(row.status)">{{ getStatusLabel(row.status) }}</span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button class="action-btn view" title="View Details">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <button class="action-btn approve" title="Approve" (click)="approveApplication(row)" *ngIf="row.status !== 'approved'">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                </button>
+                <button class="action-btn reject" title="Reject" (click)="rejectApplication(row)" *ngIf="row.status !== 'rejected'">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-footer">
+      <span class="showing-text">Showing 1–{{ filteredAdmissions.length }} of {{ admissions.length }} applications</span>
+      <div class="pagination">
+        <button class="page-btn" disabled>← Previous</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">Next →</button>
+      </div>
+    </div>
+  </section>
+</div>

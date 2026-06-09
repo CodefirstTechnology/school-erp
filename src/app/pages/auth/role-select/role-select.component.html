@@ -1,0 +1,114 @@
+<div class="auth-page">
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="auth-split">
+    <!-- Left: Branding & Illustration -->
+    <aside class="auth-brand">
+      <div class="brand-content">
+        <div class="logo-wrap">
+          <app-brand-logo variant="auth" tag="School Management System" [iconSize]="44"></app-brand-logo>
+        </div>
+
+        <div class="welcome-block">
+          <h1 class="welcome-title">Welcome to the future of <span>smart education</span></h1>
+          <p class="welcome-desc">AI-powered school management — admissions, analytics, transport, finance & more in one unified platform.</p>
+        </div>
+
+        <div class="illustration-wrap">
+          <svg class="edu-illustration" viewBox="0 0 400 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="illusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.15"/>
+              </linearGradient>
+              <linearGradient id="brainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#C4B5FD"/>
+                <stop offset="100%" stop-color="#8B5CF6"/>
+              </linearGradient>
+            </defs>
+            <!-- Floating cards -->
+            <rect x="40" y="60" width="100" height="70" rx="12" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+            <rect x="48" y="72" width="50" height="6" rx="3" fill="rgba(255,255,255,0.5)"/>
+            <rect x="48" y="84" width="70" height="4" rx="2" fill="rgba(255,255,255,0.25)"/>
+            <rect x="48" y="94" width="60" height="4" rx="2" fill="rgba(255,255,255,0.2)"/>
+            <rect x="260" y="40" width="110" height="80" rx="12" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+            <circle cx="290" cy="70" r="16" fill="url(#brainGrad)" opacity="0.8"/>
+            <rect x="315" y="62" width="40" height="5" rx="2" fill="rgba(255,255,255,0.4)"/>
+            <rect x="315" y="72" width="55" height="4" rx="2" fill="rgba(255,255,255,0.2)"/>
+            <!-- Central hub -->
+            <circle cx="200" cy="160" r="70" fill="url(#illusGrad)" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+            <circle cx="200" cy="160" r="48" fill="rgba(139,92,246,0.25)" stroke="url(#brainGrad)" stroke-width="2"/>
+            <path d="M200 130c-8 0-14 6-14 14s6 14 14 14 14-6 14-14-6-14-14-14zm0 22c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z" fill="white" opacity="0.9"/>
+            <path d="M200 118v-8M200 202v-8M168 160h-8M240 160h-8" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+            <!-- Connection lines -->
+            <path d="M140 95 Q170 120 155 160" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6"/>
+            <path d="M260 80 Q230 110 245 155" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6"/>
+            <path d="M100 200 Q150 180 160 200" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>
+            <path d="M300 200 Q250 185 240 205" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>
+            <!-- Bottom stats -->
+            <rect x="80" y="240" width="90" height="55" rx="10" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)"/>
+            <text x="95" y="262" fill="white" font-size="11" font-weight="600" opacity="0.7">AI Insights</text>
+            <text x="95" y="282" fill="white" font-size="18" font-weight="700">94.2%</text>
+            <rect x="230" y="240" width="90" height="55" rx="10" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)"/>
+            <text x="245" y="262" fill="white" font-size="11" font-weight="600" opacity="0.7">Students</text>
+            <text x="245" y="282" fill="white" font-size="18" font-weight="700">2,480</text>
+          </svg>
+        </div>
+
+        <div class="brand-features">
+          <div class="feature-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            AI-Powered Analytics
+          </div>
+          <div class="feature-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Secure & Compliant
+          </div>
+          <div class="feature-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            Cloud-Based ERP
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Right: Role Selection -->
+    <main class="auth-main">
+      <div class="auth-panel glass-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Choose your role</h2>
+          <p class="panel-subtitle">Select how you'd like to sign in to SchoolMate</p>
+        </div>
+
+        <div class="role-grid">
+          <div *ngFor="let role of roles" class="role-card glass-card">
+            <div class="role-icon-wrap">
+              <ng-container [ngSwitch]="role.icon">
+                <svg *ngSwitchCase="'student'" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>
+                <svg *ngSwitchCase="'teacher'" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                <svg *ngSwitchCase="'parent'" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <svg *ngSwitchCase="'admin'" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </ng-container>
+            </div>
+            <div class="role-info">
+              <h3 class="role-name">{{ role.name }}</h3>
+              <p class="role-desc">{{ role.description }}</p>
+            </div>
+            <button class="role-continue" (click)="continueAs(role)">
+              Continue
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <p class="auth-footer">
+          Need help? <a href="#">Contact support</a> · <a href="#">Privacy Policy</a>
+        </p>
+      </div>
+    </main>
+  </div>
+</div>

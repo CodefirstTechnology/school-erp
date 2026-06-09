@@ -1,0 +1,15 @@
+<div
+  class="sm-brand"
+  [class.sm-brand--sidebar]="variant === 'sidebar'"
+  [class.sm-brand--auth]="variant === 'auth'"
+  [class.sm-brand--icon-only]="iconOnly">
+  <div class="sm-brand__icon-wrap">
+    <img [src]="iconSrc" alt="SchoolMate" class="sm-brand__icon" [width]="iconSize" [height]="iconSize" />
+  </div>
+  <div class="sm-brand__text" *ngIf="!iconOnly">
+    <span class="sm-brand__wordmark">
+      <span class="sm-brand__school">School</span><span class="sm-brand__mate">Mate</span>
+    </span>
+    <span class="sm-brand__tag" *ngIf="tag">{{ tag }}</span>
+  </div>
+</div>

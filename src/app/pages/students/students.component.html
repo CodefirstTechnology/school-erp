@@ -1,0 +1,324 @@
+<div class="students-page">
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb">
+        <span>SchoolMate</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <span class="current">Students</span>
+      </div>
+      <h1 class="page-title">Student <span class="gradient-text">Management</span></h1>
+      <p class="page-subtitle">Manage student records, profiles, and academic information</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+      </button>
+      <button class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Student
+      </button>
+    </div>
+  </section>
+
+  <!-- KPI Cards -->
+  <section class="kpi-grid">
+    <div *ngFor="let kpi of kpiCards" class="kpi-card glass-card">
+      <div class="kpi-icon-wrap" [class]="'icon-' + kpi.color">
+        <ng-container [ngSwitch]="kpi.icon">
+          <svg *ngSwitchCase="'total'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <svg *ngSwitchCase="'active'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <svg *ngSwitchCase="'new'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+          <svg *ngSwitchCase="'attendance'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </ng-container>
+      </div>
+      <div class="kpi-value">{{ kpi.value }}</div>
+      <div class="kpi-label">{{ kpi.title }}</div>
+      <div class="kpi-sub">{{ kpi.subtitle }}</div>
+    </div>
+  </section>
+
+  <!-- Filters -->
+  <section class="filters-bar glass-card">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label>Academic Year</label>
+        <select [(ngModel)]="selectedYear">
+          <option *ngFor="let y of academicYears" [value]="y">{{ y }}</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Class</label>
+        <select [(ngModel)]="selectedClass">
+          <option *ngFor="let c of classes" [value]="c">{{ c }}</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Section</label>
+        <select [(ngModel)]="selectedSection">
+          <option *ngFor="let s of sections" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Gender</label>
+        <select [(ngModel)]="selectedGender">
+          <option *ngFor="let g of genders" [value]="g">{{ g }}</option>
+        </select>
+      </div>
+      <div class="filter-group search-group">
+        <label>Search</label>
+        <div class="search-input-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" [(ngModel)]="searchQuery" placeholder="Name, roll no, parent..." />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Student Directory -->
+  <section class="directory-section glass-card">
+    <div class="table-header">
+      <div>
+        <h2 class="section-title">Student Directory</h2>
+        <p class="section-subtitle">{{ filteredStudents.length }} students found</p>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="students-table">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Roll Number</th>
+            <th>Class</th>
+            <th>Section</th>
+            <th>Parent Details</th>
+            <th>Attendance</th>
+            <th>Academic Score</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let student of filteredStudents" [class.inactive-row]="student.status === 'inactive'">
+            <td>
+              <div class="student-cell">
+                <img [src]="getAvatarUrl(student.fullName)" [alt]="student.fullName" />
+                <div>
+                  <span class="student-name">{{ student.fullName }}</span>
+                  <span class="student-meta">{{ student.gender }} · {{ student.status === 'active' ? 'Active' : 'Inactive' }}</span>
+                </div>
+              </div>
+            </td>
+            <td><span class="roll-badge">{{ student.rollNumber }}</span></td>
+            <td>{{ student.class }}</td>
+            <td><span class="section-badge">{{ student.section }}</span></td>
+            <td>
+              <div class="parent-cell">
+                <span class="parent-name">{{ student.parentName }}</span>
+                <span class="parent-contact">{{ student.parentContact }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="metric-cell">
+                <div class="metric-bar-track">
+                  <div class="metric-bar" [class]="getAttendanceClass(student.attendance)" [style.width.%]="student.attendance"></div>
+                </div>
+                <span class="metric-value" [class]="getAttendanceClass(student.attendance)">{{ student.attendance }}%</span>
+              </div>
+            </td>
+            <td>
+              <div class="score-cell">
+                <span class="score-value" [class]="getScoreClass(student.academicScore)">{{ student.academicScore }}%</span>
+                <span class="score-label">Overall</span>
+              </div>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button class="action-btn view" title="View Profile" (click)="viewProfile(student)">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <button class="action-btn edit" title="Edit Student">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+                <button class="action-btn delete" title="Delete Student" (click)="deleteStudent(student)">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-footer">
+      <span class="showing-text">Showing {{ filteredStudents.length }} of {{ students.length }} students</span>
+      <div class="pagination">
+        <button class="page-btn" disabled>← Previous</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">Next →</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Profile Drawer -->
+<div class="profile-overlay" *ngIf="selectedStudent" [class.visible]="showProfile" (click)="closeProfile()"></div>
+<aside class="profile-drawer glass-card" *ngIf="selectedStudent" [class.open]="showProfile">
+  <div class="drawer-header">
+    <div class="drawer-profile-top">
+      <img [src]="getAvatarUrl(selectedStudent.fullName)" [alt]="selectedStudent.fullName" class="drawer-avatar" />
+      <div class="drawer-info">
+        <h2>{{ selectedStudent.fullName }}</h2>
+        <span class="drawer-roll">{{ selectedStudent.rollNumber }}</span>
+        <div class="drawer-tags">
+          <span class="tag class-tag">{{ selectedStudent.class }} — Sec {{ selectedStudent.section }}</span>
+          <span class="tag" [class.active-tag]="selectedStudent.status === 'active'" [class.inactive-tag]="selectedStudent.status === 'inactive'">
+            {{ selectedStudent.status === 'active' ? 'Active' : 'Inactive' }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <button class="drawer-close" (click)="closeProfile()" aria-label="Close profile">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="drawer-stats">
+    <div class="drawer-stat">
+      <span class="stat-value">{{ selectedStudent.attendance }}%</span>
+      <span class="stat-label">Attendance</span>
+    </div>
+    <div class="drawer-stat">
+      <span class="stat-value">{{ selectedStudent.academicScore }}%</span>
+      <span class="stat-label">Academic Score</span>
+    </div>
+    <div class="drawer-stat">
+      <span class="stat-value">{{ selectedStudent.gender }}</span>
+      <span class="stat-label">Gender</span>
+    </div>
+  </div>
+
+  <nav class="profile-tabs">
+    <button [class.active]="profileTab === 'personal'" (click)="setProfileTab('personal')">Personal Info</button>
+    <button [class.active]="profileTab === 'academic'" (click)="setProfileTab('academic')">Academic Records</button>
+    <button [class.active]="profileTab === 'attendance'" (click)="setProfileTab('attendance')">Attendance</button>
+    <button [class.active]="profileTab === 'fees'" (click)="setProfileTab('fees')">Fee Records</button>
+    <button [class.active]="profileTab === 'documents'" (click)="setProfileTab('documents')">Documents</button>
+  </nav>
+
+  <div class="drawer-content">
+    <!-- Personal Information -->
+    <div *ngIf="profileTab === 'personal'" class="tab-panel">
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Date of Birth</span>
+          <span class="info-value">{{ selectedStudent.dateOfBirth }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Blood Group</span>
+          <span class="info-value">{{ selectedStudent.bloodGroup }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Admission Date</span>
+          <span class="info-value">{{ selectedStudent.admissionDate }}</span>
+        </div>
+        <div class="info-item full-width">
+          <span class="info-label">Address</span>
+          <span class="info-value">{{ selectedStudent.address }}</span>
+        </div>
+      </div>
+      <h3 class="panel-subtitle">Parent / Guardian</h3>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Name</span>
+          <span class="info-value">{{ selectedStudent.parentName }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Contact</span>
+          <span class="info-value">{{ selectedStudent.parentContact }}</span>
+        </div>
+        <div class="info-item full-width">
+          <span class="info-label">Email</span>
+          <span class="info-value">{{ selectedStudent.parentEmail }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Academic Records -->
+    <div *ngIf="profileTab === 'academic'" class="tab-panel">
+      <div class="records-list">
+        <div *ngFor="let rec of selectedStudent.academicRecords" class="record-row">
+          <span class="record-subject">{{ rec.subject }}</span>
+          <div class="record-bar-wrap">
+            <div class="record-bar" [style.width.%]="rec.score"></div>
+          </div>
+          <span class="record-score">{{ rec.score }}%</span>
+          <span class="record-grade">{{ rec.grade }}</span>
+        </div>
+      </div>
+      <div class="overall-score-card">
+        <span>Overall Academic Score</span>
+        <strong>{{ selectedStudent.academicScore }}%</strong>
+      </div>
+    </div>
+
+    <!-- Attendance History -->
+    <div *ngIf="profileTab === 'attendance'" class="tab-panel">
+      <div class="attendance-list">
+        <div *ngFor="let att of selectedStudent.attendanceHistory" class="attendance-row">
+          <span class="att-month">{{ att.month }}</span>
+          <div class="att-bar-track">
+            <div class="att-bar" [style.width.%]="(att.present / att.total) * 100"></div>
+          </div>
+          <span class="att-count">{{ att.present }}/{{ att.total }}</span>
+          <span class="att-pct">{{ ((att.present / att.total) * 100) | number:'1.0-0' }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fee Records -->
+    <div *ngIf="profileTab === 'fees'" class="tab-panel">
+      <div class="fee-list">
+        <div *ngFor="let fee of selectedStudent.feeRecords" class="fee-row">
+          <div class="fee-info">
+            <span class="fee-term">{{ fee.term }}</span>
+            <span class="fee-due">Due: {{ fee.dueDate }}</span>
+          </div>
+          <span class="fee-amount">{{ fee.amount }}</span>
+          <span class="fee-status" [ngClass]="getFeeStatusClass(fee.status)">{{ fee.status | titlecase }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Documents -->
+    <div *ngIf="profileTab === 'documents'" class="tab-panel">
+      <div class="doc-list">
+        <div *ngFor="let doc of selectedStudent.documents" class="doc-row">
+          <div class="doc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div class="doc-info">
+            <span class="doc-name">{{ doc.name }}</span>
+            <span class="doc-meta">{{ doc.type }} · Uploaded {{ doc.uploaded }}</span>
+          </div>
+          <button class="doc-download" title="Download">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer-actions">
+    <button class="btn btn-secondary btn-sm">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Edit Student
+    </button>
+    <button class="btn btn-primary btn-sm">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download Report
+    </button>
+  </div>
+</aside>

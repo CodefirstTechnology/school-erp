@@ -1,0 +1,82 @@
+.sm-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.sm-brand__icon-wrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.sm-brand--sidebar .sm-brand__icon-wrap,
+.sm-brand--auth .sm-brand__icon-wrap {
+  width: auto;
+  height: auto;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.sm-brand__icon {
+  display: block;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.sm-brand--sidebar .sm-brand__icon,
+.sm-brand--auth .sm-brand__icon {
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.15));
+}
+
+.sm-brand__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sm-brand__wordmark {
+  font-size: 18px;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.sm-brand--auth .sm-brand__wordmark {
+  font-size: 20px;
+}
+
+.sm-brand__school {
+  font-weight: 700;
+  color: #fff;
+}
+
+.sm-brand__mate {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.sm-brand__tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sm-brand--auth .sm-brand__tag {
+  font-size: 12px;
+}
+
+.sm-brand--icon-only .sm-brand__icon {
+  filter: none;
+}

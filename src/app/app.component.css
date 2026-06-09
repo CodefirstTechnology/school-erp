@@ -1,0 +1,35 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+.main-wrapper {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 24px 32px 40px;
+  overflow-y: auto;
+}
+
+.auth-shell {
+  margin-left: 0 !important;
+}
+
+.auth-content {
+  flex: 1;
+  padding: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 1024px) {
+  .main-wrapper {
+    margin-left: 0;
+  }
+}

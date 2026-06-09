@@ -1,0 +1,8 @@
+<app-sidebar *ngIf="showAdminShell"></app-sidebar>
+<div class="main-wrapper" [class.auth-shell]="!showAdminShell">
+  <app-top-nav *ngIf="showAdminShell" [isDarkMode]="isDarkMode" (darkModeToggle)="toggleDarkMode()"></app-top-nav>
+  <main [class.main-content]="showAdminShell" [class.auth-content]="!showAdminShell">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+<app-ai-assistant *ngIf="showAdminShell"></app-ai-assistant>

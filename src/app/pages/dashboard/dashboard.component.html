@@ -1,0 +1,306 @@
+<div class="dashboard">
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb">
+        <span>SchoolMate</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <span class="current">Admin Dashboard</span>
+      </div>
+      <h1 class="welcome-title">Welcome back, <span class="gradient-text">Admin</span></h1>
+      <div class="header-meta">
+        <span class="meta-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          {{ currentDate }}
+        </span>
+        <span class="meta-divider">•</span>
+        <span class="meta-item school-name">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          {{ schoolName }}
+        </span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+        Add Student
+      </button>
+      <button class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        New Admission
+      </button>
+      <button class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Generate Report
+      </button>
+    </div>
+  </section>
+
+  <!-- KPI Cards -->
+  <section class="kpi-grid">
+    <div *ngFor="let kpi of kpiCards" class="kpi-card glass-card">
+      <div class="kpi-header">
+        <div class="kpi-icon" [class]="'kpi-icon-' + kpi.icon">
+          <ng-container [ngSwitch]="kpi.icon">
+            <svg *ngSwitchCase="'students'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <svg *ngSwitchCase="'teachers'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <svg *ngSwitchCase="'revenue'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <svg *ngSwitchCase="'attendance'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </ng-container>
+        </div>
+        <span *ngIf="kpi.trend" class="kpi-trend" [class.trend-up]="kpi.trendUp" [class.trend-down]="!kpi.trendUp">
+          <svg *ngIf="kpi.trendUp" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+          {{ kpi.trend }}
+        </span>
+      </div>
+      <div class="kpi-value">{{ kpi.value }}</div>
+      <div class="kpi-title">{{ kpi.title }}</div>
+      <div class="kpi-subtitle">{{ kpi.subtitle }}</div>
+      <div *ngIf="kpi.chartType === 'line'" class="kpi-mini-chart">
+        <svg viewBox="0 0 120 30" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="miniGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,25 L20,22 L40,18 L60,15 L80,12 L100,8 L120,5" fill="none" stroke="#8B5CF6" stroke-width="2"/>
+          <path d="M0,25 L20,22 L40,18 L60,15 L80,12 L100,8 L120,5 L120,30 L0,30 Z" fill="url(#miniGrad)"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Analytics Section -->
+  <section class="analytics-section">
+    <div class="chart-card glass-card chart-large">
+      <div class="chart-header">
+        <div>
+          <h2 class="section-title">Student Growth Analytics</h2>
+          <p class="section-subtitle">Enrollment trends over the academic year</p>
+        </div>
+        <div class="chart-filters">
+          <button class="filter-btn active">Monthly</button>
+          <button class="filter-btn">Quarterly</button>
+          <button class="filter-btn">Yearly</button>
+        </div>
+      </div>
+      <div class="chart-body">
+        <svg class="growth-chart" viewBox="0 0 100 70" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#7C3AED" stop-opacity="0.25"/>
+              <stop offset="50%" stop-color="#8B5CF6" stop-opacity="0.1"/>
+              <stop offset="100%" stop-color="#A78BFA" stop-opacity="0.02"/>
+            </linearGradient>
+            <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#7C3AED"/>
+              <stop offset="50%" stop-color="#8B5CF6"/>
+              <stop offset="100%" stop-color="#A78BFA"/>
+            </linearGradient>
+          </defs>
+          <line *ngFor="let i of [0,1,2,3,4]" [attr.x1]="0" [attr.y1]="i * 17.5" [attr.x2]="100" [attr.y2]="i * 17.5" stroke="var(--chart-grid)" stroke-width="0.3"/>
+          <path [attr.d]="getGrowthArea()" fill="url(#areaGrad)"/>
+          <path [attr.d]="getGrowthPath()" fill="none" stroke="url(#lineGrad)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle *ngFor="let v of growthData; let i = index"
+                  [attr.cx]="(i / (growthData.length - 1)) * 100"
+                  [attr.cy]="70 - ((v - 3200) / (4850 - 3200)) * 62 - 4"
+                  r="1.5" fill="#fff" stroke="#8B5CF6" stroke-width="0.8"/>
+        </svg>
+        <div class="chart-labels">
+          <span *ngFor="let label of growthLabels">{{ label }}</span>
+        </div>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot primary"></span> Total Enrollment</span>
+          <span class="legend-stat">Peak: <strong>4,850</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="analytics-right">
+      <div class="chart-card glass-card">
+        <div class="chart-header compact">
+          <h2 class="section-title">Attendance Analytics</h2>
+          <span class="badge badge-success">94% avg</span>
+        </div>
+        <div class="bar-chart">
+          <div *ngFor="let bar of attendanceData" class="bar-group">
+            <div class="bar-wrapper">
+              <div class="bar" [style.height.%]="bar.value" [class.high]="bar.value >= 95"></div>
+            </div>
+            <span class="bar-label">{{ bar.label }}</span>
+            <span class="bar-value">{{ bar.value }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card glass-card">
+        <div class="chart-header compact">
+          <h2 class="section-title">Class-wise Performance</h2>
+        </div>
+        <div class="performance-list">
+          <div *ngFor="let item of classPerformance" class="performance-item">
+            <div class="perf-header">
+              <span class="perf-class">{{ item.class }}</span>
+              <span class="perf-score">{{ item.score }}%</span>
+            </div>
+            <div class="perf-bar-track">
+              <div class="perf-bar-fill" [style.width.%]="item.score" [style.background]="item.color"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Insights -->
+  <section class="ai-section">
+    <div class="section-header-row">
+      <div>
+        <h2 class="section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="url(#aiTitleGrad)" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.4V11h2a7 7 0 0 1 7 7h-2.3a4 4 0 0 1-7.4 0H7a7 7 0 0 1 7-7h2V9.4A4 4 0 0 1 12 2z"/></svg>
+          AI Insights
+        </h2>
+        <p class="section-subtitle">Powered by SchoolMate — Real-time recommendations</p>
+      </div>
+      <button class="btn btn-ghost btn-sm">View All Insights →</button>
+    </div>
+    <div class="ai-grid">
+      <div *ngFor="let insight of aiInsights" class="ai-card glass-card" [class]="'ai-card-' + insight.type">
+        <div class="ai-card-header">
+          <div class="ai-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.4V11h2a7 7 0 0 1 7 7h-2.3a4 4 0 0 1-7.4 0H7a7 7 0 0 1 7-7h2V9.4A4 4 0 0 1 12 2z"/></svg>
+          </div>
+          <div class="confidence-badge">
+            <span class="confidence-value">{{ insight.confidence }}%</span>
+            <span class="confidence-label">confidence</span>
+          </div>
+        </div>
+        <h3 class="ai-card-title">{{ insight.title }}</h3>
+        <p class="ai-card-desc">{{ insight.description }}</p>
+        <div class="ai-action">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <span>{{ insight.action }}</span>
+        </div>
+        <button class="btn btn-sm ai-details-btn">View Details</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- School Operations -->
+  <section class="operations-section">
+    <h2 class="section-title" style="margin-bottom: 16px;">School Operations</h2>
+    <div class="operations-grid">
+      <div class="ops-card glass-card">
+        <div class="ops-header">
+          <div class="ops-icon transport-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="22" height="12" rx="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
+          </div>
+          <h3>Transport</h3>
+          <span class="badge badge-success">Live</span>
+        </div>
+        <div class="ops-stats">
+          <div class="ops-stat">
+            <span class="ops-value">18</span>
+            <span class="ops-label">Active Buses</span>
+          </div>
+          <div class="ops-stat">
+            <span class="ops-value">16</span>
+            <span class="ops-label">GPS Tracking</span>
+          </div>
+          <div class="ops-stat">
+            <span class="ops-value">89%</span>
+            <span class="ops-label">Route Completion</span>
+          </div>
+        </div>
+        <div class="ops-progress">
+          <div class="ops-progress-bar" style="width: 89%"></div>
+        </div>
+      </div>
+
+      <div class="ops-card glass-card">
+        <div class="ops-header">
+          <div class="ops-icon staff-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          </div>
+          <h3>Staff Activity</h3>
+        </div>
+        <div class="ops-list">
+          <div class="ops-list-item">
+            <span class="ops-list-dot green"></span>
+            <span>287 staff present today</span>
+          </div>
+          <div class="ops-list-item">
+            <span class="ops-list-dot orange"></span>
+            <span>12 leave requests pending</span>
+          </div>
+          <div class="ops-list-item">
+            <span class="ops-list-dot blue"></span>
+            <span>5 new onboarding this week</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ops-card glass-card">
+        <div class="ops-header">
+          <div class="ops-icon announce-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </div>
+          <h3>Announcements</h3>
+        </div>
+        <div class="announce-list">
+          <div class="announce-item">
+            <span class="announce-tag notice">Notice</span>
+            <span>Annual day rehearsal — June 15</span>
+          </div>
+          <div class="announce-item">
+            <span class="announce-tag event">Event</span>
+            <span>Parent-teacher meeting — June 20</span>
+          </div>
+          <div class="announce-item">
+            <span class="announce-tag comm">Comm</span>
+            <span>Summer vacation schedule sent</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Activities Table -->
+  <section class="activities-section glass-card">
+    <div class="activities-header">
+      <div>
+        <h2 class="section-title">Recent Activities</h2>
+        <p class="section-subtitle">Latest actions across all departments</p>
+      </div>
+      <button class="btn btn-ghost btn-sm">View All →</button>
+    </div>
+    <div class="table-wrapper">
+      <table class="activities-table">
+        <thead>
+          <tr>
+            <th>Activity</th>
+            <th>User</th>
+            <th>Department</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of recentActivities">
+            <td class="activity-cell">{{ row.activity }}</td>
+            <td>
+              <div class="user-cell">
+                <img [src]="'https://api.dicebear.com/7.x/initials/svg?seed=' + row.user" [alt]="row.user" />
+                {{ row.user }}
+              </div>
+            </td>
+            <td><span class="dept-badge">{{ row.department }}</span></td>
+            <td class="date-cell">{{ row.date }}</td>
+            <td><span class="badge" [ngClass]="getStatusClass(row.status)">{{ getStatusLabel(row.status) }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

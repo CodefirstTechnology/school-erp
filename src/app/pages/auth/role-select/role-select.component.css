@@ -1,0 +1,314 @@
+.auth-page {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: #0F172A;
+}
+
+.ambient-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+}
+
+.orb-1 {
+  width: 500px;
+  height: 500px;
+  background: rgba(139, 92, 246, 0.35);
+  top: -120px;
+  left: -100px;
+  animation: float 12s ease-in-out infinite;
+}
+
+.orb-2 {
+  width: 400px;
+  height: 400px;
+  background: rgba(167, 139, 250, 0.25);
+  bottom: -80px;
+  right: 10%;
+  animation: float 15s ease-in-out infinite reverse;
+}
+
+.orb-3 {
+  width: 300px;
+  height: 300px;
+  background: rgba(124, 58, 237, 0.2);
+  top: 40%;
+  left: 35%;
+  animation: float 10s ease-in-out infinite 2s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(20px, -20px); }
+}
+
+.auth-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* Left Brand Panel */
+.auth-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  background: linear-gradient(160deg, rgba(124, 58, 237, 0.95) 0%, rgba(139, 92, 246, 0.85) 40%, rgba(167, 139, 250, 0.75) 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.brand-content {
+  max-width: 440px;
+  color: #fff;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 40px;
+}
+
+.logo-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-name {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.logo-tag {
+  display: block;
+  font-size: 12px;
+  opacity: 0.75;
+  margin-top: 2px;
+}
+
+.welcome-block { margin-bottom: 32px; }
+
+.welcome-title {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  margin-bottom: 14px;
+}
+
+.welcome-title span {
+  background: linear-gradient(90deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.welcome-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+.illustration-wrap {
+  margin-bottom: 28px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+}
+
+.edu-illustration {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.brand-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.feature-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+}
+
+/* Right Panel */
+.auth-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 32px;
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.glass-panel {
+  width: 100%;
+  max-width: 560px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 36px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+}
+
+.panel-header { margin-bottom: 28px; }
+
+.panel-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.panel-subtitle {
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+.role-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.role-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px !important;
+  transition: all 0.25s ease;
+  box-shadow: none !important;
+}
+
+.role-card:hover {
+  background: rgba(255, 255, 255, 0.09) !important;
+  border-color: #8B5CF6 !important;
+  transform: translateX(4px);
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15) !important;
+}
+
+.role-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #7C3AED, #8B5CF6, #A78BFA);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+}
+
+.role-info { min-width: 0; }
+
+.role-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 4px;
+}
+
+.role-desc {
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.45;
+}
+
+.role-continue {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.role-card:hover .role-continue {
+  background: #8B5CF6;
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.45);
+}
+
+.auth-footer {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.auth-footer a {
+  color: #A78BFA;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-footer a:hover { text-decoration: underline; }
+
+@media (max-width: 1024px) {
+  .auth-split { grid-template-columns: 1fr; }
+  .auth-brand { padding: 32px; min-height: auto; }
+  .illustration-wrap { display: none; }
+  .welcome-title { font-size: 26px; }
+}
+
+@media (max-width: 640px) {
+  .role-card {
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+  }
+  .role-continue {
+    grid-column: 1 / -1;
+    justify-content: center;
+    margin-top: 4px;
+  }
+  .glass-panel { padding: 24px; }
+}

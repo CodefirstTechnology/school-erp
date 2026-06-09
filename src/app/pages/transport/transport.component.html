@@ -1,0 +1,479 @@
+<div class="transport-page">
+  <!-- Header -->
+  <section class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb">
+        <span>SchoolMate</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <span class="current">Transport</span>
+      </div>
+      <h1 class="page-title">Transport <span class="gradient-text">Management</span></h1>
+      <p class="page-subtitle">Fleet logistics, route planning, GPS tracking & student allocation</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export Report
+      </button>
+      <button class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Vehicle
+      </button>
+    </div>
+  </section>
+
+  <!-- KPI Cards -->
+  <section class="kpi-grid">
+    <div *ngFor="let kpi of kpiCards" class="kpi-card glass-card" [class]="'kpi-' + kpi.color">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap" [class]="'icon-' + kpi.color">
+          <ng-container [ngSwitch]="kpi.icon">
+            <svg *ngSwitchCase="'buses'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="22" height="12" rx="2"/><path d="M7 6V4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+            <svg *ngSwitchCase="'routes'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M6 16V8a4 4 0 0 1 4-4h4"/><path d="M18 8v8a4 4 0 0 1-4 4h-4"/></svg>
+            <svg *ngSwitchCase="'students'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <svg *ngSwitchCase="'gps'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+          </ng-container>
+        </div>
+        <span *ngIf="kpi.change" class="kpi-change" [class.up]="kpi.trendUp" [class.down]="!kpi.trendUp">{{ kpi.change }}</span>
+      </div>
+      <div class="kpi-value">{{ kpi.value }}</div>
+      <div class="kpi-label">{{ kpi.title }}</div>
+      <div class="kpi-sub">{{ kpi.subtitle }}</div>
+    </div>
+  </section>
+
+  <!-- Map Section -->
+  <section class="map-section glass-card">
+    <div class="map-header">
+      <div>
+        <h2 class="section-title">Fleet Tracking Map</h2>
+        <p class="section-subtitle">Real-time GPS monitoring & route visualization</p>
+      </div>
+      <div class="map-tabs">
+        <button class="map-tab" [class.active]="mapView === 'live'" (click)="setMapView('live')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+          Live Bus Tracking
+        </button>
+        <button class="map-tab" [class.active]="mapView === 'routes'" (click)="setMapView('routes')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M6 16V8a4 4 0 0 1 4-4h4"/></svg>
+          Route Visualization
+        </button>
+        <button class="map-tab" [class.active]="mapView === 'gps'" (click)="setMapView('gps')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          GPS Monitoring
+        </button>
+      </div>
+    </div>
+
+    <div class="map-body">
+      <!-- Map Canvas -->
+      <div class="map-canvas">
+        <div class="map-grid"></div>
+        <svg class="route-overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <filter id="routeGlow">
+              <feGaussianBlur stdDeviation="0.8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <!-- Route paths -->
+          <path *ngFor="let route of routePaths"
+                [attr.d]="route.path"
+                fill="none"
+                [attr.stroke]="route.color"
+                [attr.stroke-width]="mapView === 'routes' ? 2.5 : 1.2"
+                [attr.opacity]="mapView === 'gps' ? 0.2 : 0.7"
+                stroke-linecap="round"
+                [attr.filter]="mapView === 'routes' ? 'url(#routeGlow)' : null"
+                stroke-dasharray="4 2"/>
+          <!-- School marker -->
+          <circle cx="12" cy="50" r="4" fill="#8B5CF6" stroke="#fff" stroke-width="1"/>
+          <text x="12" y="58" text-anchor="middle" fill="var(--text-secondary)" font-size="4" font-weight="600">School</text>
+        </svg>
+
+        <!-- Live bus markers -->
+        <ng-container *ngIf="mapView === 'live' || mapView === 'routes'">
+          <div *ngFor="let bus of liveBuses"
+               class="bus-marker"
+               [class.selected]="selectedBus?.id === bus.id"
+               [class.delayed]="bus.status === 'Delayed'"
+               [class.stopped]="bus.status === 'Stopped'"
+               [style.left.%]="bus.x"
+               [style.top.%]="bus.y"
+               (click)="selectBus(bus)">
+            <div class="bus-pulse"></div>
+            <div class="bus-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="22" height="12" rx="2"/><circle cx="7" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/></svg>
+            </div>
+            <span class="bus-tooltip">{{ bus.regNo }}</span>
+          </div>
+        </ng-container>
+
+        <!-- Live badge -->
+        <div class="live-badge" *ngIf="mapView === 'live'">
+          <span class="live-dot"></span>
+          LIVE · {{ liveBuses.length }} buses tracked
+        </div>
+      </div>
+
+      <!-- Map Sidebar -->
+      <div class="map-sidebar">
+        <!-- Live tracking panel -->
+        <div *ngIf="mapView === 'live'" class="map-panel">
+          <h3 class="panel-title">Active Buses</h3>
+          <div class="bus-list">
+            <div *ngFor="let bus of liveBuses"
+                 class="bus-item"
+                 [class.active]="selectedBus?.id === bus.id"
+                 (click)="selectBus(bus)">
+              <div class="bus-item-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="22" height="12" rx="2"/></svg>
+              </div>
+              <div class="bus-item-info">
+                <span class="bus-reg">{{ bus.regNo }}</span>
+                <span class="bus-route">{{ bus.route }}</span>
+              </div>
+              <div class="bus-item-meta">
+                <span class="badge" [ngClass]="getStatusClass(bus.status)">{{ bus.status }}</span>
+                <span class="bus-speed">{{ bus.speed }} km/h</span>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="selectedBus" class="bus-detail">
+            <h4>Selected Bus</h4>
+            <div class="detail-row"><span>Registration</span><strong>{{ selectedBus.regNo }}</strong></div>
+            <div class="detail-row"><span>Route</span><strong>{{ selectedBus.route }}</strong></div>
+            <div class="detail-row"><span>Speed</span><strong>{{ selectedBus.speed }} km/h</strong></div>
+            <div class="detail-row"><span>Students</span><strong>{{ selectedBus.students }} onboard</strong></div>
+            <div class="detail-row"><span>Status</span><span class="badge" [ngClass]="getStatusClass(selectedBus.status)">{{ selectedBus.status }}</span></div>
+          </div>
+        </div>
+
+        <!-- Route visualization panel -->
+        <div *ngIf="mapView === 'routes'" class="map-panel">
+          <h3 class="panel-title">Active Routes</h3>
+          <div class="route-legend">
+            <div *ngFor="let route of routePaths" class="route-legend-item">
+              <span class="route-line" [style.background]="route.color"></span>
+              <span>Route {{ route.id }} — {{ route.name }}</span>
+            </div>
+          </div>
+          <div class="route-stats">
+            <div class="route-stat">
+              <span class="rs-val">12</span>
+              <span class="rs-label">Active Routes</span>
+            </div>
+            <div class="route-stat">
+              <span class="rs-val">48 km</span>
+              <span class="rs-label">Total Distance</span>
+            </div>
+            <div class="route-stat">
+              <span class="rs-val">62</span>
+              <span class="rs-label">Total Stops</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- GPS monitoring panel -->
+        <div *ngIf="mapView === 'gps'" class="map-panel">
+          <h3 class="panel-title">GPS Device Status</h3>
+          <div class="gps-summary">
+            <div class="gps-stat online">
+              <span class="gs-val">16</span>
+              <span class="gs-label">Online</span>
+            </div>
+            <div class="gps-stat offline">
+              <span class="gs-val">2</span>
+              <span class="gs-label">Offline</span>
+            </div>
+          </div>
+          <div class="gps-list">
+            <div *ngFor="let device of gpsDevices" class="gps-item">
+              <div class="gps-item-header">
+                <span class="gps-id">{{ device.id }}</span>
+                <span class="badge" [ngClass]="getStatusClass(device.status)">{{ device.status }}</span>
+              </div>
+              <span class="gps-vehicle">{{ device.vehicle }}</span>
+              <div class="gps-metrics">
+                <div class="gps-metric">
+                  <span>Signal</span>
+                  <div class="signal-bar">
+                    <div class="signal-fill" [style.width.%]="device.signal" [class.weak]="device.signal < 50"></div>
+                  </div>
+                </div>
+                <div class="gps-metric">
+                  <span>Battery</span>
+                  <div class="signal-bar">
+                    <div class="signal-fill battery" [style.width.%]="device.battery" [class.weak]="device.battery < 20"></div>
+                  </div>
+                </div>
+              </div>
+              <span class="gps-ping">Last ping: {{ device.lastPing }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module Navigation -->
+  <section class="module-nav glass-card">
+    <button *ngFor="let mod of modules"
+            class="module-btn"
+            [class.active]="activeModule === mod.id"
+            (click)="setModule(mod.id)">
+      <ng-container [ngSwitch]="mod.icon">
+        <svg *ngSwitchCase="'routes'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M6 16V8a4 4 0 0 1 4-4h4"/></svg>
+        <svg *ngSwitchCase="'vehicles'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="22" height="12" rx="2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+        <svg *ngSwitchCase="'drivers'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+        <svg *ngSwitchCase="'allocation'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+      </ng-container>
+      <span>{{ mod.label }}</span>
+      <span *ngIf="mod.count" class="module-count">{{ mod.count }}</span>
+    </button>
+  </section>
+
+  <!-- Filters -->
+  <section class="filters-bar glass-card">
+    <div class="filters-row">
+      <div class="filter-group">
+        <label>Route</label>
+        <select [(ngModel)]="selectedRoute">
+          <option *ngFor="let r of routes" [value]="r">{{ r }}</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Status</label>
+        <select [(ngModel)]="selectedStatus">
+          <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+      <div class="filter-group search-group">
+        <label>Search</label>
+        <div class="search-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" [(ngModel)]="searchQuery" placeholder="Search vehicles, drivers, routes..." />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vehicle List -->
+  <section *ngIf="activeModule === 'vehicles'" class="table-section glass-card">
+    <div class="table-header">
+      <div>
+        <h2 class="section-title">Vehicle List</h2>
+        <p class="section-subtitle">{{ vehicles.length }} vehicles in fleet</p>
+      </div>
+      <button class="btn btn-primary btn-sm">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Vehicle
+      </button>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Registration</th>
+            <th>Model</th>
+            <th>Capacity</th>
+            <th>Route</th>
+            <th>Driver</th>
+            <th>Fuel</th>
+            <th>GPS</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let v of vehicles">
+            <td><strong class="reg-no">{{ v.regNo }}</strong></td>
+            <td>{{ v.model }}</td>
+            <td>{{ v.capacity }} seats</td>
+            <td>{{ v.route }}</td>
+            <td>{{ v.driver }}</td>
+            <td>
+              <div class="fuel-cell">
+                <div class="fuel-bar">
+                  <div class="fuel-fill" [style.width.%]="v.fuelLevel" [ngClass]="getFuelClass(v.fuelLevel)"></div>
+                </div>
+                <span>{{ v.fuelLevel }}%</span>
+              </div>
+            </td>
+            <td><span class="badge" [ngClass]="getStatusClass(v.gpsStatus)">{{ v.gpsStatus }}</span></td>
+            <td><span class="badge" [ngClass]="getStatusClass(v.status)">{{ v.status }}</span></td>
+            <td>
+              <div class="row-actions">
+                <button class="icon-btn" title="Track"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></button>
+                <button class="icon-btn" title="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Driver List -->
+  <section *ngIf="activeModule === 'drivers'" class="table-section glass-card">
+    <div class="table-header">
+      <div>
+        <h2 class="section-title">Driver List</h2>
+        <p class="section-subtitle">{{ drivers.length }} registered drivers</p>
+      </div>
+      <button class="btn btn-primary btn-sm">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Driver
+      </button>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Driver</th>
+            <th>Phone</th>
+            <th>License No.</th>
+            <th>Expiry</th>
+            <th>Vehicle</th>
+            <th>Route</th>
+            <th>Experience</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of drivers">
+            <td>
+              <div class="user-cell">
+                <img [src]="d.avatar" [alt]="d.name" class="user-avatar" />
+                <strong>{{ d.name }}</strong>
+              </div>
+            </td>
+            <td>{{ d.phone }}</td>
+            <td class="mono">{{ d.licenseNo }}</td>
+            <td>{{ d.licenseExpiry }}</td>
+            <td>{{ d.assignedVehicle }}</td>
+            <td>{{ d.route }}</td>
+            <td>{{ d.experience }}</td>
+            <td><span class="badge" [ngClass]="getStatusClass(d.status)">{{ d.status }}</span></td>
+            <td>
+              <div class="row-actions">
+                <button class="icon-btn" title="Call"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>
+                <button class="icon-btn" title="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Route Details -->
+  <section *ngIf="activeModule === 'routes'" class="table-section glass-card">
+    <div class="table-header">
+      <div>
+        <h2 class="section-title">Route Details</h2>
+        <p class="section-subtitle">{{ routeDetails.length }} configured routes</p>
+      </div>
+      <button class="btn btn-primary btn-sm">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Create Route
+      </button>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Route</th>
+            <th>Code</th>
+            <th>Start → End</th>
+            <th>Stops</th>
+            <th>Distance</th>
+            <th>Duration</th>
+            <th>Students</th>
+            <th>Vehicle</th>
+            <th>Driver</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of routeDetails">
+            <td><strong>{{ r.name }}</strong></td>
+            <td><span class="code-tag">{{ r.code }}</span></td>
+            <td class="route-path-cell">{{ r.startPoint }} → {{ r.endPoint }}</td>
+            <td>{{ r.stops }}</td>
+            <td>{{ r.distance }}</td>
+            <td>{{ r.duration }}</td>
+            <td>{{ r.students }}</td>
+            <td class="mono">{{ r.vehicle }}</td>
+            <td>{{ r.driver }}</td>
+            <td><span class="badge" [ngClass]="getStatusClass(r.status)">{{ r.status }}</span></td>
+            <td>
+              <div class="row-actions">
+                <button class="icon-btn" title="View on map"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></button>
+                <button class="icon-btn" title="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Student Allocation -->
+  <section *ngIf="activeModule === 'allocation'" class="table-section glass-card">
+    <div class="table-header">
+      <div>
+        <h2 class="section-title">Student Allocation</h2>
+        <p class="section-subtitle">{{ studentAllocations.length }} transport assignments</p>
+      </div>
+      <button class="btn btn-primary btn-sm">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Assign Student
+      </button>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Class</th>
+            <th>Roll No.</th>
+            <th>Route</th>
+            <th>Stop</th>
+            <th>Pickup</th>
+            <th>Drop</th>
+            <th>Fee (₹)</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of studentAllocations">
+            <td>
+              <div class="user-cell">
+                <img [src]="s.avatar" [alt]="s.studentName" class="user-avatar" />
+                <strong>{{ s.studentName }}</strong>
+              </div>
+            </td>
+            <td>{{ s.class }}</td>
+            <td>{{ s.rollNo }}</td>
+            <td>{{ s.route }}</td>
+            <td>{{ s.stop }}</td>
+            <td>{{ s.pickupTime }}</td>
+            <td>{{ s.dropTime }}</td>
+            <td>₹{{ s.fee | number }}</td>
+            <td><span class="badge" [ngClass]="getStatusClass(s.status)">{{ s.status }}</span></td>
+            <td>
+              <div class="row-actions">
+                <button class="icon-btn" title="Reassign"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>
+                <button class="icon-btn" title="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
