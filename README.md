@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # EduFlow AI — School Management Dashboard
 
 A high-fidelity, enterprise-grade SaaS dashboard for school management built with Angular 15.
@@ -35,3 +36,6 @@ Output is in `dist/eduflow-ai/`.
 - CSS custom properties (design tokens)
 - SVG charts (no external chart library)
 - Inter font (Google Fonts)
+=======
+# school-erp
+>>>>>>> e13467e0209ddd21321d0d1feba69f376298903a
